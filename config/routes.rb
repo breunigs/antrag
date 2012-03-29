@@ -1,6 +1,9 @@
 Antrag::Application.routes.draw do
   resources :fachschafts
 
+  match "/auth/:provider/callback" => "sessions#create"
+  match "/signout" => "sessions#destroy", :as => :signout
+
   # The priority is based upon order of creation:
   # first created -> highest priority.
 
