@@ -1,5 +1,5 @@
 Rails.application.config.middleware.use OmniAuth::Strategies::LDAP,
-      :title => "Local openLDAP",
+      :title => "FSK Login",
       :host => '129.206.116.22',
       :port => 636,
       :method => :ssl,
