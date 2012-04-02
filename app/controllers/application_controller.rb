@@ -19,8 +19,8 @@ class ApplicationController < ActionController::Base
   # successful login.
   def force_login
     return false if current_user
-    path = Base64.encode64(request.fullpath)
-    redirect_to "/auth/#{APP_CONFIG["default_auth_method"]}?return_to=#{path}"
+    path = Base64.urlsafe_encode64(request.fullpath)
+    redirect_to "/login?return_to=#{path}"
     return true
   end
 end
