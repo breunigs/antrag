@@ -1,0 +1,5 @@
+# The default method used to sign in users. This gets called whenever
+# a login is required, but the user is not yet logged in. Be sure to
+# implement other login methods using OmniAuth before switchting this.
+# The following route should exist: auth/__default_auth_method__
+default_auth_method: ldap
