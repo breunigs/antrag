@@ -24,6 +24,7 @@ class FachschaftsController < ApplicationController
   # GET /fachschafts/new
   # GET /fachschafts/new.json
   def new
+    return if force_login
     @fachschaft = Fachschaft.new
 
     respond_to do |format|
@@ -34,6 +35,7 @@ class FachschaftsController < ApplicationController
 
   # GET /fachschafts/1/edit
   def edit
+    return if force_login
     @fachschaft = Fachschaft.find(params[:id])
   end
 
@@ -56,6 +58,7 @@ class FachschaftsController < ApplicationController
   # PUT /fachschafts/1
   # PUT /fachschafts/1.json
   def update
+    return if force_login
     @fachschaft = Fachschaft.find(params[:id])
 
     respond_to do |format|
@@ -72,6 +75,7 @@ class FachschaftsController < ApplicationController
   # DELETE /fachschafts/1
   # DELETE /fachschafts/1.json
   def destroy
+    return if force_login
     @fachschaft = Fachschaft.find(params[:id])
     @fachschaft.destroy
 
