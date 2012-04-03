@@ -1,12 +1,10 @@
 class User < ActiveRecord::Base
-  attr_accessible :name
+  attr_accessible :groups, :fachschaft_ids
 
   validates :name, :uid, :provider, :presence => true
   validates :name, :uid,            :uniqueness => true
 
   has_and_belongs_to_many :fachschafts
-
-
 
   def self.create_with_omniauth(auth)
     create! do |user|
@@ -15,4 +13,18 @@ class User < ActiveRecord::Base
       user.name = auth["info"]["name"]
     end
   end
+
+  # Determines the root status of the given user.
+  def self.is_root?(user)
+    return false if user.nil?
+    user.groups.split(" ").include?("root")
+  end
+
+  # Determines the root status of this user.
+  def is_root?
+    User.is_root?(self)
+  end
+
+  # Methods regarding the “current_user” are located in app/helpers/
+  # UserHelper.rb
 end

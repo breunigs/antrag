@@ -1,0 +1,29 @@
+<h1>Listing fachschafts</h1>
+
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Mail</th>
+    <th>Url</th>
+    <th>Address</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @fachschafts.each do |fachschaft| %>
+  <tr>
+    <td><%= fachschaft.name %></td>
+    <td><%= fachschaft.mail %></td>
+    <td><%= fachschaft.url %></td>
+    <td><%= fachschaft.address %></td>
+    <td><%= link_to 'Show', fachschaft %></td>
+    <td><%= link_to 'Edit', edit_fachschaft_path(fachschaft) %></td>
+    <td><%= link_to 'Destroy', fachschaft, confirm: 'Are you sure?', method: :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Fachschaft', new_fachschaft_path %>

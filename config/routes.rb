@@ -1,5 +1,6 @@
 Antrag::Application.routes.draw do
   resources :fachschafts
+  resources :users
 
   match "/login" => "sessions#login"
   match "/auth/:provider/callback" => "sessions#create"
