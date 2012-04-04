@@ -1,17 +1,17 @@
-class FachschaftsController < ApplicationController
-  # GET /fachschafts
-  # GET /fachschafts.json
+class FachschaftenController < ApplicationController
+  # GET /fachschaften
+  # GET /fachschaften.json
   def index
-    @fachschafts = Fachschaft.all
+    @fachschaften = Fachschaft.all
 
     respond_to do |format|
       format.html # index.html.erb
-      format.json { render json: @fachschafts }
+      format.json { render json: @fachschaften }
     end
   end
 
-  # GET /fachschafts/1
-  # GET /fachschafts/1.json
+  # GET /fachschaften/1
+  # GET /fachschaften/1.json
   def show
     @fachschaft = Fachschaft.find(params[:id])
 
@@ -21,10 +21,10 @@ class FachschaftsController < ApplicationController
     end
   end
 
-  # GET /fachschafts/new
-  # GET /fachschafts/new.json
+  # GET /fachschaften/new
+  # GET /fachschaften/new.json
   def new
-    return if force_login
+    return if force_group("root")
     @fachschaft = Fachschaft.new
 
     respond_to do |format|
@@ -33,14 +33,14 @@ class FachschaftsController < ApplicationController
     end
   end
 
-  # GET /fachschafts/1/edit
+  # GET /fachschaften/1/edit
   def edit
-    return if force_login
+    return if force_group("root")
     @fachschaft = Fachschaft.find(params[:id])
   end
 
-  # POST /fachschafts
-  # POST /fachschafts.json
+  # POST /fachschaften
+  # POST /fachschaften.json
   def create
     @fachschaft = Fachschaft.new(params[:fachschaft])
 
@@ -55,10 +55,10 @@ class FachschaftsController < ApplicationController
     end
   end
 
-  # PUT /fachschafts/1
-  # PUT /fachschafts/1.json
+  # PUT /fachschaften/1
+  # PUT /fachschaften/1.json
   def update
-    return if force_login
+    return if force_group("root")
     @fachschaft = Fachschaft.find(params[:id])
 
     respond_to do |format|
@@ -72,15 +72,15 @@ class FachschaftsController < ApplicationController
     end
   end
 
-  # DELETE /fachschafts/1
-  # DELETE /fachschafts/1.json
+  # DELETE /fachschaften/1
+  # DELETE /fachschaften/1.json
   def destroy
-    return if force_login
+    return if force_group("root")
     @fachschaft = Fachschaft.find(params[:id])
     @fachschaft.destroy
 
     respond_to do |format|
-      format.html { redirect_to fachschafts_url }
+      format.html { redirect_to fachschaften_url }
       format.json { head :no_content }
     end
   end

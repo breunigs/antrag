@@ -4,19 +4,20 @@ class User < ActiveRecord::Base
   validates :name, :uid, :provider, :presence => true
   validates :name, :uid,            :uniqueness => true
 
-  has_and_belongs_to_many :fachschafts
+  has_and_belongs_to_many :fachschaften
 
   def self.create_with_omniauth(auth)
     create! do |user|
       user.provider = auth["provider"]
       user.uid = auth["uid"]
       user.name = auth["info"]["name"]
+      user.groups = ""
     end
   end
 
   # Determines the root status of the given user.
   def self.is_root?(user)
-    return false if user.nil?
+    return false if user.nil? || user.groups.nil?
     user.groups.split(" ").include?("root")
   end
 

@@ -16,7 +16,7 @@
   <tr>
     <td><%= user.name %></td>
     <td><%= user.groups %></td>
-    <td><%= user.fachschafts.map { |f| f.name }.join(", ") %></td>
+    <td><%= user.fachschaften.map { |f| f.name }.join(", ") %></td>
     <% if is_current_root? %>
       <td><%= link_to 'Ändern / Rechte zuteilen', edit_user_path(user) %></td>
     <% end %>

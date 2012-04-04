@@ -1,0 +1,2 @@
+module FachschaftenHelper
+end

@@ -1,14 +1,14 @@
 require 'test_helper'
 
-class FachschaftsControllerTest < ActionController::TestCase
+class FachschaftenControllerTest < ActionController::TestCase
   setup do
-    @fachschaft = fachschafts(:one)
+    @fachschaft = fachschaften(:one)
   end
 
   test "should get index" do
     get :index
     assert_response :success
-    assert_not_nil assigns(:fachschafts)
+    assert_not_nil assigns(:fachschaften)
   end
 
   test "should get new" do
@@ -44,6 +44,6 @@ class FachschaftsControllerTest < ActionController::TestCase
       delete :destroy, id: @fachschaft
     end
 
-    assert_redirected_to fachschafts_path
+    assert_redirected_to fachschaften_path
   end
 end

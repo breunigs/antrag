@@ -1,5 +1,6 @@
 Antrag::Application.routes.draw do
-  resources :fachschafts
+
+  resources :fachschaften
   resources :users
 
   match "/login" => "sessions#login"

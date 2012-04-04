@@ -24,7 +24,7 @@
     <p>Fachschaften, in denen <%= @user.name %> aktiv ist. Ein Häkchen bedeutet, dass <%= @user.name %> für die jeweilige Fachschaft abstimmen darf und deren Daten ändern kann.</p>
   <% for fachschaft in Fachschaft.all %>
     <label>
-    <%= check_box_tag "user[fachschaft_ids][]", fachschaft.id, @user.fachschafts.include?(fachschaft) %>
+    <%= check_box_tag "user[fachschaft_ids][]", fachschaft.id, @user.fachschaften.include?(fachschaft) %>
     <%= fachschaft.name %></label>
   <% end %>
   </div>

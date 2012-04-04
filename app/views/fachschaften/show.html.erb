@@ -1,0 +1,29 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Name:</b>
+  <%= @fachschaft.name %>
+</p>
+
+<p>
+  <b>Mail:</b>
+  <%=mail_to @fachschaft.mail %>
+</p>
+
+<p>
+  <b>Url:</b>
+  <%=link_to @fachschaft.url %>
+</p>
+
+<p>
+  <b>Address:</b>
+  <%=link_to @fachschaft.address, "http://www.osm.org?query=#{u @fachschaft.address}%20Heidelberg" %>
+</p>
+
+<p><b>Mitglieder:</b><br/>
+  <%= @fachschaft.users.map { |u| u.name }.join(", ") %>
+</p>
+
+
+<%= link_to 'Edit', edit_fachschaft_path(@fachschaft) %> |
+<%= link_to 'Back', fachschaften_path %>

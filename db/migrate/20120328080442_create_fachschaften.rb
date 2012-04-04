@@ -1,6 +1,6 @@
-class CreateFachschafts < ActiveRecord::Migration
+class CreateFachschaften < ActiveRecord::Migration
   def change
-    create_table :fachschafts do |t|
+    create_table :fachschaften do |t|
       t.string :name
       t.string :mail
       t.string :url
