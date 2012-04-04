@@ -1,0 +1,20 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Name:</b>
+  <%= @referat.name %>
+</p>
+
+<p>
+  <b>Mail:</b>
+  <%=mail_to @referat.mail %>
+</p>
+
+<p><b>Mitglieder:</b><br/>
+  <%= @referat.users.map { |u| u.name }.join(", ") %>
+</p>
+
+
+
+<%= link_to 'Edit', edit_referat_path(@referat) %> |
+<%= link_to 'Back', referate_path %>

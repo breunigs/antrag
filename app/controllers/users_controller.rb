@@ -24,6 +24,7 @@ class UsersController < ApplicationController
 
     # init always, so non-checked checkboxes will be updated
     params[:user][:fachschaft_ids] ||= []
+    params[:user][:referat_ids] ||= []
     # normalize groups field
     params[:user][:groups] = params[:user][:groups].downcase.split(/[^a-z]+/).uniq.sort.join(" ") if params[:user][:groups]
 

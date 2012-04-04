@@ -40,10 +40,11 @@ module UserHelper
 
     # If the intersection of the groups is empty, the user doesn’t have
     # enough rights. Return true in that case.
-    g = current_user.groups || ""
-    denied = (g.split(" ") & groups).empty?
-    flash[:error] = "Du hast nicht genügend Rechte für diesen Vorgang."
-    redirect_to (request.referer || "/") if denied
+    denied = ((current_user.groups || "").split(" ") & groups).empty?
+    if denied
+      flash[:error] = "Du hast nicht genügend Rechte für diesen Vorgang."
+      redirect_to (request.referer || "/")
+    end
     return denied
   end
 end

@@ -19,6 +19,17 @@
     Jede Gruppe bringt Rechte. Die mächtigste ist „root“. Mehrere Gruppen mit Leerzeichen trennen.
   </div>
 
+
+  <div class="field">
+    <h2>Referate</h2>
+    <p>Referate, in denen <%= @user.name %> aktiv ist. Ein Häkchen bedeutet, dass <%= @user.name %> für die jeweilige Fachschaft abstimmen darf und deren Daten ändern kann.</p>
+  <% for referat in Referat.all %>
+    <label>
+    <%= check_box_tag "user[referat_ids][]", referat.id, @user.referate.include?(referat) %>
+    <%= referat.name %></label>
+  <% end %>
+  </div>
+
   <div class="field">
     <h2>Fachschaften</h2>
     <p>Fachschaften, in denen <%= @user.name %> aktiv ist. Ein Häkchen bedeutet, dass <%= @user.name %> für die jeweilige Fachschaft abstimmen darf und deren Daten ändern kann.</p>

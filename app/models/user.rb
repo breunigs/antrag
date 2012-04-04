@@ -1,10 +1,11 @@
 class User < ActiveRecord::Base
-  attr_accessible :groups, :fachschaft_ids
+  attr_accessible :groups, :fachschaft_ids, :referat_ids
 
   validates :name, :uid, :provider, :presence => true
   validates :name, :uid,            :uniqueness => true
 
   has_and_belongs_to_many :fachschaften
+  has_and_belongs_to_many :referate
 
   def self.create_with_omniauth(auth)
     create! do |user|

@@ -8,8 +8,22 @@
 </head>
 <body>
 
+<div id="login">
+<% if current_user %>
+  Angemeldet als: <b><%=current_user.name%></b>. <a href="/logout">Ausloggen?</a>
+<% else %>
+  <a href="/login">Du bist nicht angemeldet. Einloggen?</a>
+<% end %>
+</div>
+
+<menu>
+<% for m in ["fachschaften", "referate", "users"] do %>
+  <li><%=link_to m, "/#{m}" %></li>
+<% end %>
+</menu>
+
 <% flash.each do |key, msg| %>
-    <%= content_tag :div, msg, :class => [key, " message"], :id => "notice_ #{key}" %>
+    <%= content_tag :div, msg, :class => [key, " message"], :id => "notice_#{key}" %>
     <%= content_tag :script, :type => "text/javascript" do -%>
         setTimeout("new Effect.Fade('notice_<%= key %>');", 15000);
     <% end %>

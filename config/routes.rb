@@ -1,5 +1,7 @@
 Antrag::Application.routes.draw do
 
+  resources :referate
+
   resources :fachschaften
   resources :users
 

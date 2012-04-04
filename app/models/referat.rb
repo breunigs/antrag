@@ -1,8 +1,8 @@
-class Fachschaft < ActiveRecord::Base
-  attr_accessible :name, :mail, :url, :address
+class Referat < ActiveRecord::Base
+  attr_accessible :name, :mail
 
   validates :name, :mail,  :presence => true
-  validates :name, :mail,  :uniqueness => true
+  validates :name,         :uniqueness => true
 
   validates_format_of :mail, :with => MAIL_REGEX
 

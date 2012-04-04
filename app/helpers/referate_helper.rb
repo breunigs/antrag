@@ -1,0 +1,2 @@
+module ReferateHelper
+end
