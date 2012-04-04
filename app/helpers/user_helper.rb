@@ -47,4 +47,10 @@ module UserHelper
     end
     return denied
   end
+
+  private
+
+  def set_test_cookie
+    cookies["cookie_test"] = "I am not paranoid."
+  end
 end

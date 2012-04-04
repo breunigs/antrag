@@ -3,4 +3,5 @@ class ApplicationController < ActionController::Base
 
   include UserHelper
   helper :all
+  before_filter :set_test_cookie, :except => :login
 end

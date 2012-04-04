@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 class SessionsController < ApplicationController
   def create
     auth = request.env["omniauth.auth"]
@@ -35,6 +37,16 @@ class SessionsController < ApplicationController
     path << "?return_to=#{Base64.urlsafe_encode64(get_return_to_path)}"
 
     redirect_to path, :notice => msg
+  end
+
+  def login
+    if cookies["cookie_test"].blank?
+      flash.now[:warning] = "Möglicherweise erlaubt Dein Browser keine Cookies. Wenn das der Fall ist, wirst Du Dich nicht richtig einloggen können."
+    end
+    # Try to set test cookie again, in case the user reloads the page to
+    # see if it works now. Still needs to reload twice, but better than
+    # nothing.
+    set_test_cookie
   end
 
   private
