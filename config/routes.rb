@@ -1,7 +1,7 @@
 Antrag::Application.routes.draw do
+  root :to => "users#index"
 
   resources :referate
-
   resources :fachschaften
   resources :users
 
