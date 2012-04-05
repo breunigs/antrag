@@ -1,10 +1,16 @@
 class Mailer < ActionMailer::Base
-  default :from => "from@example.com"
+  default :from => "antrag@fsk.uni-heidelberg.de"
 
-  # >>> Mailer.antrag(referat oder so, antragsteller)
-  def antrag(mail, cc)
+  # >>> Mailer.antrag(referat oder so, antragsteller, antrag-id)
+  def antrag(mail, submitter, antrag_id = "0")
     @greeting = "Hi"
 
-    mail(:to => mail, :cc => cc, :subject => "Neuer Antrag", :reply_to => [mail, cc])
+    # add header to be able to link this mail to a certain Antrag
+    # automatically
+    headers["X-Antrag-ID"] = antrag_id
+
+    # send mails manually for each mail so that reply-to simply works
+    mail(:to => submitter, :subject => "Neuer Antrag (Kopie)", :reply_to => [mail, "antrag@fsk.uni-heidelberg.de"]).deliver
+    mail(:to => mail, :subject => "Neuer Antrag", :reply_to => [submitter, "antrag@fsk.uni-heidelberg.de"]).deliver
   end
 end
