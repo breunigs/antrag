@@ -1,0 +1,33 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  type: 
+  title: MyString
+  text: MyText
+  is_top: false
+  contact_mail: MyString
+  contact_name: MyString
+  contact_fon: MyString
+  indent: MyString
+  publication: 2012-04-05
+  status: MyString
+  fin_expected_amount: 1.5
+  fin_charged_amount: 1.5
+  fin_deducted: false
+  fin_granted: false
+
+two:
+  type: 
+  title: MyString
+  text: MyText
+  is_top: false
+  contact_mail: MyString
+  contact_name: MyString
+  contact_fon: MyString
+  indent: MyString
+  publication: 2012-04-05
+  status: MyString
+  fin_expected_amount: 1.5
+  fin_charged_amount: 1.5
+  fin_deducted: false
+  fin_granted: false

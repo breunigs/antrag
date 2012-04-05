@@ -1,4 +1,6 @@
 Antrag::Application.routes.draw do
+  resources :motions
+
   root :to => "users#index"
 
   resources :referate

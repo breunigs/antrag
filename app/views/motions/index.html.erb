@@ -1,0 +1,49 @@
+<h1>Listing motions</h1>
+
+<table>
+  <tr>
+    <th>Type</th>
+    <th>Title</th>
+    <th>Text</th>
+    <th>Is top</th>
+    <th>Contact mail</th>
+    <th>Contact name</th>
+    <th>Contact fon</th>
+    <th>Indent</th>
+    <th>Publication</th>
+    <th>Status</th>
+    <th>Fin expected amount</th>
+    <th>Fin charged amount</th>
+    <th>Fin deducted</th>
+    <th>Fin granted</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @motions.each do |motion| %>
+  <tr>
+    <td><%= motion.type %></td>
+    <td><%= motion.title %></td>
+    <td><%= motion.text %></td>
+    <td><%= motion.is_top %></td>
+    <td><%= motion.contact_mail %></td>
+    <td><%= motion.contact_name %></td>
+    <td><%= motion.contact_fon %></td>
+    <td><%= motion.indent %></td>
+    <td><%= motion.publication %></td>
+    <td><%= motion.status %></td>
+    <td><%= motion.fin_expected_amount %></td>
+    <td><%= motion.fin_charged_amount %></td>
+    <td><%= motion.fin_deducted %></td>
+    <td><%= motion.fin_granted %></td>
+    <td><%= link_to 'Show', motion %></td>
+    <td><%= link_to 'Edit', edit_motion_path(motion) %></td>
+    <td><%= link_to 'Destroy', motion, confirm: 'Are you sure?', method: :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Motion', new_motion_path %>

@@ -1,0 +1,73 @@
+<%= form_for(@motion) do |f| %>
+  <% if @motion.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@motion.errors.count, "error") %> prohibited this motion from being saved:</h2>
+
+      <ul>
+      <% @motion.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :type %><br />
+    <%= f.text_field :type %>
+  </div>
+  <div class="field">
+    <%= f.label :title %><br />
+    <%= f.text_field :title %>
+  </div>
+  <div class="field">
+    <%= f.label :text %><br />
+    <%= f.text_area :text %>
+  </div>
+  <div class="field">
+    <%= f.label :is_top %><br />
+    <%= f.check_box :is_top %>
+  </div>
+  <div class="field">
+    <%= f.label :contact_mail %><br />
+    <%= f.text_field :contact_mail %>
+  </div>
+  <div class="field">
+    <%= f.label :contact_name %><br />
+    <%= f.text_field :contact_name %>
+  </div>
+  <div class="field">
+    <%= f.label :contact_fon %><br />
+    <%= f.text_field :contact_fon %>
+  </div>
+  <div class="field">
+    <%= f.label :indent %><br />
+    <%= f.text_field :indent %>
+  </div>
+  <div class="field">
+    <%= f.label :publication %><br />
+    <%= f.date_select :publication %>
+  </div>
+  <div class="field">
+    <%= f.label :status %><br />
+    <%= f.text_field :status %>
+  </div>
+  <div class="field">
+    <%= f.label :fin_expected_amount %><br />
+    <%= f.text_field :fin_expected_amount %>
+  </div>
+  <div class="field">
+    <%= f.label :fin_charged_amount %><br />
+    <%= f.text_field :fin_charged_amount %>
+  </div>
+  <div class="field">
+    <%= f.label :fin_deducted %><br />
+    <%= f.check_box :fin_deducted %>
+  </div>
+  <div class="field">
+    <%= f.label :fin_granted %><br />
+    <%= f.check_box :fin_granted %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

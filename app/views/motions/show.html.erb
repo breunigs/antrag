@@ -1,0 +1,75 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Type:</b>
+  <%= @motion.type %>
+</p>
+
+<p>
+  <b>Title:</b>
+  <%= @motion.title %>
+</p>
+
+<p>
+  <b>Text:</b>
+  <%= @motion.text %>
+</p>
+
+<p>
+  <b>Is top:</b>
+  <%= @motion.is_top %>
+</p>
+
+<p>
+  <b>Contact mail:</b>
+  <%= @motion.contact_mail %>
+</p>
+
+<p>
+  <b>Contact name:</b>
+  <%= @motion.contact_name %>
+</p>
+
+<p>
+  <b>Contact fon:</b>
+  <%= @motion.contact_fon %>
+</p>
+
+<p>
+  <b>Indent:</b>
+  <%= @motion.indent %>
+</p>
+
+<p>
+  <b>Publication:</b>
+  <%= @motion.publication %>
+</p>
+
+<p>
+  <b>Status:</b>
+  <%= @motion.status %>
+</p>
+
+<p>
+  <b>Fin expected amount:</b>
+  <%= @motion.fin_expected_amount %>
+</p>
+
+<p>
+  <b>Fin charged amount:</b>
+  <%= @motion.fin_charged_amount %>
+</p>
+
+<p>
+  <b>Fin deducted:</b>
+  <%= @motion.fin_deducted %>
+</p>
+
+<p>
+  <b>Fin granted:</b>
+  <%= @motion.fin_granted %>
+</p>
+
+
+<%= link_to 'Edit', edit_motion_path(@motion) %> |
+<%= link_to 'Back', motions_path %>
