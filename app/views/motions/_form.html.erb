@@ -12,8 +12,8 @@
   <% end %>
 
   <div class="field">
-    <%= f.label :type %><br />
-    <%= f.text_field :type %>
+    <%= f.label :kind %><br />
+    <%= f.text_field :kind %>
   </div>
   <div class="field">
     <%= f.label :title %><br />
@@ -22,10 +22,6 @@
   <div class="field">
     <%= f.label :text %><br />
     <%= f.text_area :text %>
-  </div>
-  <div class="field">
-    <%= f.label :is_top %><br />
-    <%= f.check_box :is_top %>
   </div>
   <div class="field">
     <%= f.label :contact_mail %><br />
@@ -40,32 +36,8 @@
     <%= f.text_field :contact_fon %>
   </div>
   <div class="field">
-    <%= f.label :indent %><br />
-    <%= f.text_field :indent %>
-  </div>
-  <div class="field">
-    <%= f.label :publication %><br />
-    <%= f.date_select :publication %>
-  </div>
-  <div class="field">
-    <%= f.label :status %><br />
-    <%= f.text_field :status %>
-  </div>
-  <div class="field">
     <%= f.label :fin_expected_amount %><br />
     <%= f.text_field :fin_expected_amount %>
-  </div>
-  <div class="field">
-    <%= f.label :fin_charged_amount %><br />
-    <%= f.text_field :fin_charged_amount %>
-  </div>
-  <div class="field">
-    <%= f.label :fin_deducted %><br />
-    <%= f.check_box :fin_deducted %>
-  </div>
-  <div class="field">
-    <%= f.label :fin_granted %><br />
-    <%= f.check_box :fin_granted %>
   </div>
   <div class="actions">
     <%= f.submit %>

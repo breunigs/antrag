@@ -7,6 +7,8 @@ Antrag::Application.routes.draw do
   resources :fachschaften
   resources :users
 
+  match "/vote/:fachschaft_id/:motion_id" => "votes#new"
+
   match "/login" => "sessions#login"
   match "/auth/:provider/callback" => "sessions#create"
   match "/auth/failure" => "sessions#failure"

@@ -2,14 +2,14 @@
 
 <table>
   <tr>
-    <th>Type</th>
+    <th>kind</th>
     <th>Title</th>
     <th>Text</th>
     <th>Is top</th>
     <th>Contact mail</th>
     <th>Contact name</th>
     <th>Contact fon</th>
-    <th>Indent</th>
+    <th>Ident</th>
     <th>Publication</th>
     <th>Status</th>
     <th>Fin expected amount</th>
@@ -23,14 +23,14 @@
 
 <% @motions.each do |motion| %>
   <tr>
-    <td><%= motion.type %></td>
+    <td><%= motion.kind %></td>
     <td><%= motion.title %></td>
     <td><%= motion.text %></td>
     <td><%= motion.is_top %></td>
     <td><%= motion.contact_mail %></td>
     <td><%= motion.contact_name %></td>
     <td><%= motion.contact_fon %></td>
-    <td><%= motion.indent %></td>
+    <td><%= motion.ident %></td>
     <td><%= motion.publication %></td>
     <td><%= motion.status %></td>
     <td><%= motion.fin_expected_amount %></td>

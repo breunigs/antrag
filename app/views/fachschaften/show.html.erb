@@ -24,6 +24,27 @@
   <%= @fachschaft.users.map { |u| u.name }.join(", ") %>
 </p>
 
+<p><b>Laufende Abstimmungen:</b></p>
+<table>
+  <tr><th>Antrag</th><th>Ergebnis</th><th>Abstimmen</th></tr>
+<% @fachschaft.get_votable_motions.each do |mv| %>
+  <tr>
+    <td><%=link_to mv[:motion].title, mv[:motion] %></td>
+    <td><%=mv[:vote] ? mv[:vote].result_printable : "(keine Antwort)" %></td>
+    <td>
+      <% ident = "vote_#{@fachschaft.id}_#{mv[:motion].id}" %>
+      <%= form_tag("/vote/#{@fachschaft.id}/#{mv[:motion].id}", :method => "get", :id => ident) do %>
+        <%=
+          opt = [["(keine Antwort)", ""], ["dafür", "+"], ["dagegen", "-"], ["enthalten", "o"]]
+          select_tag(:result, options_for_select(opt), {:onchange =>"$('##{ident}').submit();"})
+        %>
+      <% end %>
+    </td>
+  </tr>
+<% end %>
+</table>
+
 
 <%= link_to 'Edit', edit_fachschaft_path(@fachschaft) %> |
 <%= link_to 'Back', fachschaften_path %>
+
