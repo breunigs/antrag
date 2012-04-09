@@ -17,7 +17,7 @@ class Motion < ActiveRecord::Base
   validates_format_of :kind, :with => /^finanz|position|b$/
 
   has_many :votes
-
+  has_many :comments
 
   def is_public?
     !publication.blank?

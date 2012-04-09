@@ -24,7 +24,7 @@ class FachschaftenController < ApplicationController
   # GET /fachschaften/new
   # GET /fachschaften/new.json
   def new
-    return if force_group("root")
+    return unless force_group("root")
     @fachschaft = Fachschaft.new
 
     respond_to do |format|
@@ -35,7 +35,7 @@ class FachschaftenController < ApplicationController
 
   # GET /fachschaften/1/edit
   def edit
-    return if force_group("root")
+    return unless force_group("root")
     @fachschaft = Fachschaft.find(params[:id])
   end
 
@@ -58,7 +58,7 @@ class FachschaftenController < ApplicationController
   # PUT /fachschaften/1
   # PUT /fachschaften/1.json
   def update
-    return if force_group("root")
+    return unless force_group("root")
     @fachschaft = Fachschaft.find(params[:id])
 
     respond_to do |format|
@@ -75,7 +75,7 @@ class FachschaftenController < ApplicationController
   # DELETE /fachschaften/1
   # DELETE /fachschaften/1.json
   def destroy
-    return if force_group("root")
+    return unless force_group("root")
     @fachschaft = Fachschaft.find(params[:id])
     @fachschaft.destroy
 

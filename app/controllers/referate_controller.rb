@@ -24,7 +24,7 @@ class ReferateController < ApplicationController
   # GET /referate/new
   # GET /referate/new.json
   def new
-    return if force_group("root")
+    return unless force_group("root")
     @referat = Referat.new
 
     respond_to do |format|
@@ -35,14 +35,14 @@ class ReferateController < ApplicationController
 
   # GET /referate/1/edit
   def edit
-    return if force_group("root")
+    return unless force_group("root")
     @referat = Referat.find(params[:id])
   end
 
   # POST /referate
   # POST /referate.json
   def create
-    return if force_group("root")
+    return unless force_group("root")
     @referat = Referat.new(params[:referat])
 
     respond_to do |format|
@@ -59,7 +59,7 @@ class ReferateController < ApplicationController
   # PUT /referate/1
   # PUT /referate/1.json
   def update
-    return if force_group("root")
+    return unless force_group("root")
     @referat = Referat.find(params[:id])
 
     respond_to do |format|
@@ -76,7 +76,7 @@ class ReferateController < ApplicationController
   # DELETE /referate/1
   # DELETE /referate/1.json
   def destroy
-    return if force_group("root")
+    return unless force_group("root")
     @referat = Referat.find(params[:id])
     @referat.destroy
 

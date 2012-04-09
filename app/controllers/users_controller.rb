@@ -12,14 +12,14 @@ class UsersController < ApplicationController
 
   # GET /users/1/edit
   def edit
-    return if force_group("root")
+    return unless force_group("root")
     @user = User.find(params[:id])
   end
 
   # PUT /users/1
   # PUT /users/1.json
   def update
-    return if force_group("root")
+    return unless force_group("root")
     @user = User.find(params[:id])
 
     # init always, so non-checked checkboxes will be updated

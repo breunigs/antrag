@@ -36,7 +36,7 @@
       <%= form_tag("/vote/#{@fachschaft.id}/#{mv[:motion].id}", :method => "get", :id => ident) do %>
         <%=
           opt = [["(keine Antwort)", ""], ["dafür", "+"], ["dagegen", "-"], ["enthalten", "o"]]
-          select_tag(:result, options_for_select(opt), {:onchange =>"$('##{ident}').submit();"})
+          select_tag(:result, options_for_select(opt, mv[:vote].result), {:onchange =>"$('##{ident}').submit();"})
         %>
       <% end %>
     </td>

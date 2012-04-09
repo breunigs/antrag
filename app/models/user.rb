@@ -7,6 +7,8 @@ class User < ActiveRecord::Base
   has_and_belongs_to_many :fachschaften
   has_and_belongs_to_many :referate
 
+  has_many :comments
+
   def self.create_with_omniauth(auth)
     create! do |user|
       user.provider = auth["provider"]
