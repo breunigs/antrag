@@ -9,7 +9,7 @@ de:
     - Fr
     - Sa
     abbr_month_names:
-    - 
+    -
     - Jan
     - Feb
     - Mär
@@ -35,7 +35,7 @@ de:
       long: ! '%e. %B %Y'
       short: ! '%e. %b'
     month_names:
-    - 
+    -
     - Januar
     - Februar
     - März
@@ -121,9 +121,7 @@ de:
       wrong_length: hat die falsche Länge (muss genau %{count} Zeichen haben)
     template:
       body: ! 'Bitte überprüfen Sie die folgenden Felder:'
-      header:
-        one: ! 'Konnte %{model} nicht speichern: ein Fehler.'
-        other: ! 'Konnte %{model} nicht speichern: %{count} Fehler.'
+      header: ! 'Konnte %{model} nicht speichern: %{count} Fehler.'
   helpers:
     select:
       prompt: Bitte wählen
@@ -201,3 +199,18 @@ de:
   activerecord:
     errors:
       <<: *errors
+  # rename common fields
+  attributes:
+    mail: "E-Mail"
+    groups: "Gruppen"
+
+  activerecord:
+    # rename the models
+    models:
+      user: Nutzer
+      motion: Antrag
+    # rename specific fields
+    attributes:
+      fachschaft:
+        url: "Homepage"
+
