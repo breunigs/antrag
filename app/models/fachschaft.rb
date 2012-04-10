@@ -4,6 +4,8 @@ class Fachschaft < ActiveRecord::Base
   validates :name, :mail,  :presence => true
   validates :name, :mail,  :uniqueness => true
 
+  validates :address,  :presence => true
+
   validates_format_of :mail, :with => MAIL_REGEX
 
   has_and_belongs_to_many :users
