@@ -1,0 +1,38 @@
+<div class="container">
+  <h2>Änderungen/Kommentare</h2>
+
+  <% @motion.comments.each do |c| %>
+    <div class="comment">
+      <span title="Genaues Datum: <%=c.created_at%>">
+        vor <%= time_ago_in_words c.created_at %> von <b><%= c.get_name %></b>
+      </span>
+      <%=raw BlueCloth.new(auto_link(c.comment)).to_html %>
+    </div>
+  <% end %>
+
+  <%= form_for(@comment, :url => motion_store_comment_path) do |f| %>
+    <% if @comment.errors.any? %>
+      <div id="error_explanation">
+        <h2>Konnte den Kommentar nicht speichern, es gab <%= @comment.errors.count %> Fehler.</h2>
+
+        <ul>
+        <% @comment.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <%= f.text_area :comment, :class=>"comment" %>
+
+    <div class="comment_help">
+      <p><%=raw current_user \
+          ? "Du schreibst den Kommentar als <b>#{current_user.name}</b>." \
+          : "Du bist nicht eingeloggt und schreibst den Kommentar anonym. <a href='/login'>Einloggen?</a>"
+      %><br/>Die Texteingabe erfolgt mittels <i>Markdown</i>. Die <a href="https://de.wikipedia.org/wiki/Markdown">Wikipedia hat die vollständige Lister aller Möglichkeiten</a>.</p>
+      <p>Links werden automatisch erkannt<br/><i>*kursiv*</i> und <b>**fett**</b><br/>Absätze durch eine freie Zeile<br/> Listen indem man jeder Zeile ein * bzw. 1., 2., … voranstellt<br/># 1. Überschrift<br/>## 2. Überschrift</p>
+    </div>
+    <br style="clear:both"/>
+    <%= f.submit :class => "button primary"%>
+  <% end %>
+</div>

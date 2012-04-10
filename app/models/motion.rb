@@ -17,10 +17,20 @@ class Motion < ActiveRecord::Base
   validates_format_of :kind, :with => /^finanz|position|b$/
 
   has_many :votes
-  has_many :comments
+  has_many :comments, :order => 'created_at ASC'
+  has_many :attachments, :order => 'file_updated_at ASC'
 
   def is_public?
     !publication.blank?
+  end
+
+  def kind_printable
+    case kind
+      when "finanz" then "Finanzantrag"
+      when "position" then "Positionierungsantrag"
+      when "b" then "FIXME"
+      else raise "Invalid format for motion#kind"
+    end
   end
 
   # finds all motions that are still open for voting

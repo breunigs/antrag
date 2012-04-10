@@ -23,7 +23,7 @@ class VotesController < ApplicationController
       vote.result = params[:result]
       pp vote
       if vote.save
-        add_comment(motion, "Abgestimmt für #{fs.name}: #{vote.result_printable}")
+        add_comment(motion, "Abgestimmt für [#{fs.name}](/fachschaften/#{fs.id}): #{vote.result_printable}")
         flash[:notice] = "Abstimmung von „#{motion.title}“ ist nun „#{vote.result_printable}“."
       else
         flash[:error] = "Konnte das Abstimmungsergebnis nicht speichern."

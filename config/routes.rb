@@ -1,5 +1,8 @@
 Antrag::Application.routes.draw do
   resources :motions
+  get "/motions/:id/add_attachment" => "motions#add_attachment", :as => :motion_add_attachment
+  post "/motions/:id/store_attachment" => "motions#store_attachment", :as => :motion_store_attachment
+  post "/motions/:id/store_comment" => "motions#store_comment", :as => :motion_store_comment
 
   root :to => "users#index"
 

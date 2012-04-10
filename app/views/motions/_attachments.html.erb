@@ -1,0 +1,14 @@
+<div class="container" id="attachments">
+  <h2>Anhänge</h2>
+  <% @motion.attachments.each do |a|  %>
+    <a class="smallbox" href="<%= a.file.url %>">
+      <b><%= a.file_name %></b><br/>
+      <%= number_to_human_size(a.file_size) %>, <%= a.file_content_type %><br/>
+      <span title="Genaues Datum: <%=a.file_updated_at%>">
+        vor <%= time_ago_in_words a.file_updated_at %>
+      </span>
+    </a>
+  <% end %>
+  <br style="clear:both"/>
+  <%=link_to "Neuen Anhang hinzufügen", motion_add_attachment_path, :class => "button primary" %>
+</div>

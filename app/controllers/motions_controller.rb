@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 class MotionsController < ApplicationController
   # GET /motions
   # GET /motions.json
@@ -14,6 +16,7 @@ class MotionsController < ApplicationController
   # GET /motions/1.json
   def show
     @motion = Motion.find(params[:id])
+    @comment = Comment.new
 
     respond_to do |format|
       format.html # show.html.erb
@@ -35,6 +38,38 @@ class MotionsController < ApplicationController
   # GET /motions/1/edit
   def edit
     @motion = Motion.find(params[:id])
+  end
+
+  # GET /motions/1/add_attachment
+  def add_attachment
+    @motion = Motion.find(params[:id])
+    @attachment = Attachment.new
+  end
+
+  # POST /motions/1/store_attachment
+  def store_attachment
+    @motion = Motion.find(params[:id])
+    @attachment = Attachment.create(params[:attachment])
+    @attachment.motion_id = @motion.id
+    if @attachment.save
+      flash[:notice] = "Dateianhang gespeichert."
+      u = current_user ? (current_user.name + " hat ") : ""
+      add_comment(@motion, "#{u}Dateianhang hinzugefügt: <a href=\"#{@attachment.file.url}\">#{@attachment.file_name}</a>")
+      redirect_to motion_path(@motion)
+    else
+      flash[:error] = "Konnte den Dateianhang nicht speichern."
+      render action: "add_attachment"
+    end
+  end
+
+  # POST /motions/1/store_comment
+  def store_comment
+    @motion = Motion.find(params[:id])
+    @comment = Comment.create(params[:comment])
+    @comment.motion_id = @motion.id
+    @comment.user_id = current_user.id if current_user
+    @comment.save
+    redirect_to motion_path(@motion) + "#last_comment"
   end
 
   # POST /motions

@@ -98,6 +98,7 @@ de:
   errors: &errors
     format: ! '%{attribute} %{message}'
     messages:
+      in_between: "muss zwischen %{min} und %{max} liegen"
       accepted: muss akzeptiert werden
       blank: muss ausgefüllt werden
       confirmation: stimmt nicht mit der Bestätigung überein
@@ -203,12 +204,15 @@ de:
   attributes:
     mail: "E-Mail"
     groups: "Gruppen"
+    file: "Datei"
 
   activerecord:
     # rename the models
     models:
       user: Nutzer
       motion: Antrag
+      attachment: Anhang
+      comment: Kommentar
     # rename specific fields
     attributes:
       fachschaft:

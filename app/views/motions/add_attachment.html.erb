@@ -1,0 +1,35 @@
+<div class="container">
+  <h1>Dateianhang dem <%=@motion.kind_printable%> „<%=@motion.title%>“ hinzufügen</h1>
+
+  <p>
+    Um Verwirrung zu vermeiden, sollte der Dateiname aussagekräftig sein.
+    <% unless @motion.attachments.empty? %>
+      Bereits vorhandene Dateinamen sind: <%= @motion.attachments.map { |a| a.file_file_name }.uniq.join(", ") %>
+    <% end %>
+  </p>
+
+  <p>Die maximale Uploadgröße beträgt <b><%=number_to_human_size(MAX_ATTACHMENT_SIZE)%></b>.</p>
+
+  <%= form_for @attachment, :url => motion_store_attachment_path, :html => { :multipart => true } do |form| %>
+    <% if @attachment.errors.any? %>
+      <div id="error_explanation">
+        <h2>Konnte den Dateianhang nicht speichern, es gab <%= @attachment.errors.count %> Fehler.</h2>
+
+        <ul>
+        <% @attachment.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <div class="field">
+      <%= form.label :file %>
+      <%= form.file_field :file %>
+    </div>
+    <%= form.submit :class => "button primary", :disable_with => "Bitte warten…" %>
+      <%=link_to "Abbrechen", motion_path(@motion) + "#attachments", :class => "button" %>
+  <% end %>
+
+
+</div>

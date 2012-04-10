@@ -1,15 +1,5 @@
-<p id="notice"><%= notice %></p>
-
-<p>
-  <b>Kind:</b>
-  <%= @motion.kind %>
-</p>
-
-<p>
-  <b>Title:</b>
-  <%= @motion.title %>
-</p>
-
+<div class="container">
+  <h1><%=@motion.kind_printable%> „<%=@motion.title%>“</h1>
 <p>
   <b>Text:</b>
   <%= @motion.text %>
@@ -69,32 +59,15 @@
   <b>Fin granted:</b>
   <%= @motion.fin_granted %>
 </p>
-
-<p><b>Abstimmungsergebnisse</b></p>
-
-<table>
-  <tr><th>Fachschaft</th><th>Ergebnis</th></tr>
-<%
-votes = {}
-@motion.votes.each do |v|
-  votes[v.result_printable] ||= 0
-  votes[v.result_printable] += 1
-%>
-   <tr><td><%=v.fachschaft.name %></td><td><%= v.result_printable %></td></tr>
-<% end %>
-</table>
-Zusammenfassung:<br/> <% votes.sort_by { |name, count| count }.each do |name, count|%>
-   <i><%= name %>:</i> <%= count %> <br/>
-<% end %>
-
-
-<p>Änderungen/Kommentare:</p><br/>
-<% @motion.comments.each do |c| %>
-  <p class="comment">
-    <span>vor <%= time_ago_in_words c.created_at %> von <%= c.user.name %>:</span><br/>
-    <%= c.comment %>
-  </p>
-<% end %>
-
 <%= link_to 'Edit', edit_motion_path(@motion) %> |
 <%= link_to 'Back', motions_path %>
+</div>
+
+
+
+
+
+
+<%= render "votes" %>
+<%= render "attachments" %>
+<%= render "comments" %>
