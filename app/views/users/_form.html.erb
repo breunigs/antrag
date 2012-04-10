@@ -13,7 +13,7 @@
 
   <%= f.label :groups %>
   <%= f.text_field :groups %>
-  <p>Jede Gruppe bringt Rechte. Die mächtigste ist „root“. Mehrere Gruppen mit Leerzeichen trennen.</p>
+  <p>Jede Gruppe bringt Rechte. Die mächtigste ist „root“. Mehrere Gruppen mit Leerzeichen trennen. Bekannte Gruppen: <%= GROUPS.values.sort.join(", ") %></p>
 
   <br class="spacer"/>
   <h3>Referate</h3>

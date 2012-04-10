@@ -46,6 +46,39 @@ class MotionsController < ApplicationController
     @attachment = Attachment.new
   end
 
+  def toggle_motion_top
+    @motion = Motion.find(params[:id])
+    @motion.is_top = !@motion.is_top
+    if @motion.save
+      flash[:notice] = "Status geändert, jetzt #{@motion.is_top ? "auch ein TOP" : "kein TOP mehr"}. <a href='#{toggle_motion_top_path(@motion)}'>Rückgängig machen?</a>".html_safe
+    else
+      flash[:error] = "Konnte den Antrag nicht ändern."
+    end
+    redirect_to @motion
+  end
+
+  def toggle_motion_fin_granted
+    @motion = Motion.find(params[:id])
+    @motion.fin_granted = !@motion.fin_granted
+    if @motion.save
+      flash[:notice] = "Status geändert, #{@motion.fin_granted ? "das Geld ist jetzt genehmigt" : "das Geld ist jetzt nicht mehr genehmigt"}. <a href='#{toggle_motion_fin_granted_path(@motion)}'>Rückgängig machen?</a>".html_safe
+    else
+      flash[:error] = "Konnte den Antrag nicht ändern."
+    end
+    redirect_to @motion
+  end
+
+  def toggle_motion_fin_deducted
+    @motion = Motion.find(params[:id])
+    @motion.fin_deducted = !@motion.fin_deducted
+    if @motion.save
+      flash[:notice] = "Status geändert, #{@motion.fin_deducted ? "das Geld wurde als (vollständig) abgebucht markiert" : "das Geld wurde als noch nicht, bzw. nicht vollständig abgebucht markiert"}. <a href='#{toggle_motion_fin_deducted_path(@motion)}'>Rückgängig machen?</a>".html_safe
+    else
+      flash[:error] = "Konnte den Antrag nicht ändern."
+    end
+    redirect_to @motion
+  end
+
   # POST /motions/1/store_attachment
   def store_attachment
     @motion = Motion.find(params[:id])

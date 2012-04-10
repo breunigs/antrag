@@ -59,8 +59,14 @@
   <b>Fin granted:</b>
   <%= @motion.fin_granted %>
 </p>
-<%= link_to 'Edit', edit_motion_path(@motion) %> |
-<%= link_to 'Back', motions_path %>
+<div class="button-group">
+  <%= link_to 'Details bearbeiten', edit_motion_path(@motion), :class => "button" %>
+  <%= link_to @motion.is_top ? "als TOP streichen?" : "als TOP aufnehmen?", toggle_motion_top_path(@motion), :class => "button" %>
+  <% if @motion.finanz? && is_current_in_group?([GROUPS[:finanzen], :root]) %>
+    <%= link_to @motion.fin_granted ? "Geld (doch) nicht genehmigen?" : "Geld genehmigen?", toggle_motion_fin_granted_path(@motion), :class => "button"  %>
+    <%= link_to @motion.fin_deducted ? "Weitere Abbuchungen erwartet?" : "Alle Abbuchungen abgeschlossen?", toggle_motion_fin_deducted_path(@motion), :class => "button"   %>
+  <% end %>
+</div>
 </div>
 
 

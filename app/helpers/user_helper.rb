@@ -21,6 +21,18 @@ module UserHelper
     fachschaft.users.include?(current_user)
   end
 
+  # returns true if the current user is in the given group(s). Accepts
+  # an array or a string/symbol.
+  def is_current_in_group?(groups)
+    return false unless current_user
+    groups = [groups] if groups.is_a? String
+    groups.flatten!
+    groups.map! { |g| g.to_s }
+    raise unless groups.is_a? Array
+
+    !((current_user.groups || "").split(" ") & groups).empty?
+  end
+
   # checks if a user is currently logged in and redirects to the login
   # prompt if he isn't. Use it like this:
   #   return unless force_login
@@ -41,9 +53,6 @@ module UserHelper
   #  return unless force_group("root")
   #  return unless force_group([:root, "asdf"])
   def force_group(groups)
-    groups = [groups] if groups.is_a? String
-    groups.map! { |g| g.to_s }
-    raise unless groups.is_a? Array
     # require login
     return false unless force_login
     # Login ok but no current user?
@@ -51,12 +60,12 @@ module UserHelper
 
     # If the intersection of the groups is empty, the user doesn’t have
     # enough rights. Return true in that case.
-    denied = ((current_user.groups || "").split(" ") & groups).empty?
-    if denied
+    ok = is_current_in_group?(groups)
+    if not ok
       flash[:error] = "Du hast nicht genügend Rechte für diesen Vorgang."
       redirect_to (request.referer || "/")
     end
-    return !denied
+    return ok
   end
 
   # Ensures the user is a member of the given Fachschaft or root, unless

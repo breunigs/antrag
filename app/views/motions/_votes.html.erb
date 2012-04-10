@@ -15,7 +15,7 @@
         votes[v.result_printable] += 1
       %>
         <tr>
-          <td><%=v.fachschaft.name %></td>
+          <td><%=link_to v.fachschaft.name, v.fachschaft %></td>
           <td><%= v.result_printable %></td>
           <td title="Genaue Zeit: <%=v.updated_at%>">vor <%= time_ago_in_words v.updated_at %></td>
         </tr>

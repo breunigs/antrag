@@ -3,6 +3,9 @@ Antrag::Application.routes.draw do
   get "/motions/:id/add_attachment" => "motions#add_attachment", :as => :motion_add_attachment
   post "/motions/:id/store_attachment" => "motions#store_attachment", :as => :motion_store_attachment
   post "/motions/:id/store_comment" => "motions#store_comment", :as => :motion_store_comment
+  get "/motions/:id/toggle_motion_top" => "motions#toggle_motion_top", :as => :toggle_motion_top
+  get "/motions/:id/toggle_motion_fin_granted" => "motions#toggle_motion_fin_granted", :as => :toggle_motion_fin_granted
+  get "/motions/:id/toggle_motion_fin_deducted" => "motions#toggle_motion_fin_deducted", :as => :toggle_motion_fin_deducted
 
   root :to => "users#index"
 

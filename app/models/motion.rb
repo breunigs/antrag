@@ -24,6 +24,10 @@ class Motion < ActiveRecord::Base
     !publication.blank?
   end
 
+  def finanz?
+    kind == "finanz"
+  end
+
   def kind_printable
     case kind
       when "finanz" then "Finanzantrag"
