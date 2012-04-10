@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 class Motion < ActiveRecord::Base
   # only make the attributes mass-writable that may be entered by the
   # applicant.

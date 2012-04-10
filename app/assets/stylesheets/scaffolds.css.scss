@@ -277,6 +277,11 @@ a.smallbox {
   &:hover {
     background:#fcfcfc;
   }
+  img {
+    float:left;
+    margin-right: 4px;
+    margin-top: 1px;
+  }
 }
 
 th, td {

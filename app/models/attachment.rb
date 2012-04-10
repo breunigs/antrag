@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 class Attachment < ActiveRecord::Base
   has_attached_file :file
 
@@ -16,4 +18,13 @@ class Attachment < ActiveRecord::Base
     file_file_size
   end
 
+  def file_extension
+    file_name.gsub(/.*\./, "")
+  end
+
+  def icon_path
+    a = Antrag::Application.assets.find_asset "fileicons/#{file_extension}.png"
+
+    "/assets/fileicons/#{a ? file_extension : "_blank"}.png"
+  end
 end

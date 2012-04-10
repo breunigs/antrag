@@ -2,6 +2,7 @@
   <h2>Anhänge</h2>
   <% @motion.attachments.each do |a|  %>
     <a class="smallbox" href="<%= a.file.url %>">
+      <img src="<%=a.icon_path%>" alt="FileIcon"/>
       <b><%= a.file_name %></b><br/>
       <%= number_to_human_size(a.file_size) %>, <%= a.file_content_type %><br/>
       <span title="Genaues Datum: <%=a.file_updated_at%>">
