@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 # Be sure to restart your server when you modify this file.
 
 # Add new inflection rules using the following format
@@ -18,4 +20,6 @@
 ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular 'fachschaft', 'fachschaften'
   inflect.irregular 'referat', 'referate'
+  inflect.irregular 'antrag', 'anträge'
+  inflect.irregular 'nutzer', 'nutzer'
 end
