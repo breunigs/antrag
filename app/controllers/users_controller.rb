@@ -30,7 +30,7 @@ class UsersController < ApplicationController
 
     respond_to do |format|
       if @user.update_attributes(params[:user])
-        format.html { redirect_to "/users", notice: 'Nutzer erfolgreich aktualisiert.' }
+        format.html { redirect_to edit_user_path(@user), notice: 'Nutzer erfolgreich aktualisiert.' }
         format.json { head :no_content }
       else
         format.html { render action: "edit" }

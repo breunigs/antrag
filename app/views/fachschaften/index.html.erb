@@ -1,29 +1,15 @@
-<h1>Listing fachschaften</h1>
+<div class="container">
 
-<table>
-  <tr>
-    <th>Name</th>
-    <th>Mail</th>
-    <th>Url</th>
-    <th>Address</th>
-    <th></th>
-    <th></th>
-    <th></th>
-  </tr>
+  <h1>Fachschaften</h1>
 
-<% @fachschaften.each do |fachschaft| %>
-  <tr>
-    <td><%= fachschaft.name %></td>
-    <td><%= fachschaft.mail %></td>
-    <td><%= fachschaft.url %></td>
-    <td><%= fachschaft.address %></td>
-    <td><%= link_to 'Show', fachschaft %></td>
-    <td><%= link_to 'Edit', edit_fachschaft_path(fachschaft) %></td>
-    <td><%= link_to 'Destroy', fachschaft, confirm: 'Are you sure?', method: :delete %></td>
-  </tr>
-<% end %>
-</table>
+  <%= link_to 'Neue Fachschaft anlegen', new_fachschaft_path, :class => "single" %>
 
-<br />
 
-<%= link_to 'New Fachschaft', new_fachschaft_path %>
+  <% @fachschaften.each do |fachschaft| %>
+    <%= link_to(fachschaft, :class => "box") do %>
+      <h3><%= fachschaft.name %></h3>
+      <%= fachschaft.mail %><br/>
+      <%= fachschaft.address %>
+    <% end %>
+  <% end %>
+</div>

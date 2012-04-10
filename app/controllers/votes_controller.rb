@@ -10,20 +10,25 @@ class VotesController < ApplicationController
     if motion.nil?
       flash[:error] = "Diesen Antrag gibt es nicht, Vote ungültig."
     elsif params[:result].blank?
-      vote = Vote.find_by_motion_id_and_fachschaft_id(fs, motion)
+      vote = Vote.find_by_motion_id_and_fachschaft_id(motion.id, fs.id)
       if vote
-        add_comment(motion, "Abstimmungsergebnis entfernt (war vorher: #{vote.result_printable})")
+        add_comment(motion, "Abstimmungsergebnis für #{fs.name} entfernt (war vorher: #{vote.result_printable})")
         vote.destroy
         flash[:notice] = "Abstimmung von „#{motion.title}“ erfolgreich zurückgesetzt."
       end
     elsif !params[:result] =~ VOTE_REGEX
       flash[:error] = "Ungültige Antwortoption."
     else
-      vote = Vote.find_or_create_by_motion_id_and_fachschaft_id(fs, motion)
+      vote = Vote.find_or_create_by_motion_id_and_fachschaft_id(motion.id, fs.id)
       vote.result = params[:result]
-      vote.save
-      add_comment(motion, "Abgestimmt: #{vote.result_printable}")
-      flash[:notice] = "Abstimmung von „#{motion.title}“ ist nun „#{vote.result_printable}“."
+      pp vote
+      if vote.save
+        add_comment(motion, "Abgestimmt für #{fs.name}: #{vote.result_printable}")
+        flash[:notice] = "Abstimmung von „#{motion.title}“ ist nun „#{vote.result_printable}“."
+      else
+        flash[:error] = "Konnte das Abstimmungsergebnis nicht speichern."
+        pp vote.errors
+      end
     end
 
 

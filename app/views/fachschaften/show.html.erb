@@ -1,50 +1,48 @@
-<p id="notice"><%= notice %></p>
-
-<p>
-  <b>Name:</b>
-  <%= @fachschaft.name %>
-</p>
-
-<p>
-  <b>Mail:</b>
-  <%=mail_to @fachschaft.mail %>
-</p>
-
-<p>
-  <b>Url:</b>
-  <%=link_to @fachschaft.url %>
-</p>
-
-<p>
-  <b>Address:</b>
-  <%=link_to @fachschaft.address, "http://www.osm.org?query=#{u @fachschaft.address}%20Heidelberg" %>
-</p>
-
-<p><b>Mitglieder:</b><br/>
-  <%= @fachschaft.users.map { |u| u.name }.join(", ") %>
-</p>
-
-<p><b>Laufende Abstimmungen:</b></p>
-<table>
-  <tr><th>Antrag</th><th>Ergebnis</th><th>Abstimmen</th></tr>
-<% @fachschaft.get_votable_motions.each do |mv| %>
-  <tr>
-    <td><%=link_to mv[:motion].title, mv[:motion] %></td>
-    <td><%=mv[:vote] ? mv[:vote].result_printable : "(keine Antwort)" %></td>
-    <td>
-      <% ident = "vote_#{@fachschaft.id}_#{mv[:motion].id}" %>
-      <%= form_tag("/vote/#{@fachschaft.id}/#{mv[:motion].id}", :method => "get", :id => ident) do %>
-        <%=
-          opt = [["(keine Antwort)", ""], ["dafür", "+"], ["dagegen", "-"], ["enthalten", "o"]]
-          select_tag(:result, options_for_select(opt, mv[:vote].result), {:onchange =>"$('##{ident}').submit();"})
-        %>
-      <% end %>
-    </td>
-  </tr>
-<% end %>
-</table>
+<div class="container">
+  <h1>Fachschaft „<%= @fachschaft.name %>“</h1>
 
 
-<%= link_to 'Edit', edit_fachschaft_path(@fachschaft) %> |
-<%= link_to 'Back', fachschaften_path %>
+  <%=mail_to(@fachschaft.mail, nil, { :class => "single" }) %>
+
+  <%=link_to @fachschaft.url, @fachschaft.url, :class => "single" %>
+
+  <%=link_to @fachschaft.address, "http://www.osm.org?query=#{u @fachschaft.address}%20Heidelberg", :class => "single" %>
+
+  <p><b>Mitglieder:</b><br/>
+    <%= @fachschaft.users.map { |u| u.name }.join(", ") %>
+  </p>
+
+
+
+<%= link_to 'Kontaktdaten bearbeiten', edit_fachschaft_path(@fachschaft), :class => "button primary" %>
+<%= link_to 'Zerstören', @fachschaft, confirm: 'Fachschaft wirklich löschen?', method: :delete, :class => "button danger" if is_current_root? %>
+
+</div>
+
+<div class="container">
+  <h2>Laufende Abstimmungen</h2>
+  <p>Nachfolgend sind alle Abstimmungen aufgelistet, die zur Zeit offen sind. Jedes Fachschaftsmitglied kann die Abstimmungen ändern.</p>
+
+  <table>
+    <tr><th>Antrag</th>
+    <th>Ergebnis</th>
+    <%=raw "<th>Abstimmen</th>"  if is_current_in_fs?(@fachschaft) %></tr>
+  <% @fachschaft.get_votable_motions.each do |mv| %>
+    <tr>
+      <td><%=link_to mv[:motion].title, mv[:motion] %></td>
+      <td><%=mv[:vote] ? mv[:vote].result_printable : "" %></td>
+      <td>
+        <% ident = "vote_#{@fachschaft.id}_#{mv[:motion].id}" %>
+        <%= form_tag("/vote/#{@fachschaft.id}/#{mv[:motion].id}", :method => "get", :id => ident) do %>
+          <%=
+            opt = [["(keine Antwort)", ""], ["dafür", "+"], ["dagegen", "-"], ["enthalten", "o"]]
+            select_tag(:result, options_for_select(opt, mv[:vote] ? mv[:vote].result : ""), {:onchange =>"$('##{ident}').submit();"})
+          %>
+        <% end if is_current_in_fs?(@fachschaft)%>
+      </td>
+    </tr>
+  <% end %>
+  </table>
+
+</div>
 

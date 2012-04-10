@@ -1,4 +1,6 @@
-<h1>Bekannte Nutzer</h1>
+<div class="container">
+
+<h1>Nutzer</h1>
 <p>Nutzer werden automatisch angelegt, sobald sie sich zum ersten Mal mit ihren FSK Logindaten anmelden. Anschließend können Rechte vergeben werden. Um Nutzer zu sperren genügt es ihren Account im LDAP zu löschen, da die Authentifizierung darüber funktioniert.</p>
 
 
@@ -22,9 +24,8 @@
     <% if is_current_root? %>
       <td><%= link_to 'Ändern / Rechte zuteilen', edit_user_path(user) %></td>
     <% end %>
-    <td><%= user.is_root? ? "(root)" : "" %></td>
   </tr>
 <% end %>
 </table>
 
-<br />
+</div>

@@ -1,7 +1,7 @@
-<%= form_for(@fachschaft) do |f| %>
+ <%= form_for(@fachschaft) do |f| %>
   <% if @fachschaft.errors.any? %>
     <div id="error_explanation">
-      <h2><%= pluralize(@fachschaft.errors.count, "error") %> prohibited this fachschaft from being saved:</h2>
+      <h2>Die Fachschaft konnte nicht gespeichert werden, es gab <%= @fachschaft.errors.count %> Fehler.</h2>
 
       <ul>
       <% @fachschaft.errors.full_messages.each do |msg| %>
@@ -12,22 +12,22 @@
   <% end %>
 
   <div class="field">
-    <%= f.label :name %><br />
+    <%= f.label :name, "Name:" %>
     <%= f.text_field :name %>
   </div>
   <div class="field">
-    <%= f.label :mail %><br />
+    <%= f.label :mail, "E-Mail:" %>
     <%= f.text_field :mail %>
   </div>
   <div class="field">
-    <%= f.label :url %><br />
+    <%= f.label :url, "Homepage:" %>
     <%= f.text_field :url %>
   </div>
   <div class="field">
-    <%= f.label :address %><br />
+    <%= f.label :address, "Postadresse:" %>
     <%= f.text_field :address %>
   </div>
   <div class="actions">
-    <%= f.submit %>
+    <%= f.submit :class => "button primary" %>
   </div>
 <% end %>

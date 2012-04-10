@@ -1,6 +1,8 @@
-<h1>Editing fachschaft</h1>
+
+<div class="container">
+<h1>Fachschaft „<%= @fachschaft.name %>“ bearbeiten</h1>
 
 <%= render 'form' %>
 
-<%= link_to 'Show', @fachschaft %> |
-<%= link_to 'Back', fachschaften_path %>
+<%= link_to 'Abbrechen', @fachschaft, :class => "button" %>
+</div>

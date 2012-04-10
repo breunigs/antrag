@@ -1,6 +1,9 @@
-<h1>Editing referat</h1>
+<div class="container">
 
-<%= render 'form' %>
+  <h1>Referat „<%=@referat.name%>“ bearbeiten</h1>
 
-<%= link_to 'Show', @referat %> |
-<%= link_to 'Back', referate_path %>
+  <%= render 'form' %>
+
+  <%= link_to 'Abbrechen', @referat, :class => "button" %>
+
+</div>

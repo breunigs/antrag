@@ -5,31 +5,38 @@
   <%= stylesheet_link_tag    "application", :media => "all" %>
   <%= javascript_include_tag "application" %>
   <%= csrf_meta_tags %>
+  <link href='http://fonts.googleapis.com/css?family=Oxygen' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Droid+Serif:700' rel='stylesheet' type='text/css'>
 </head>
-<body>
+<body class="body-noise">
 
-<div id="login">
-<% if current_user %>
-  Angemeldet als: <b><%=current_user.name%></b>. <a href="/logout">Ausloggen?</a>
-<% else %>
-  <a href="/login">Du bist nicht angemeldet. Einloggen?</a>
-<% end %>
+<div id="header" class="noise">
+  <span>Antragsverwaltung</span>
+  <div id="login">
+  <% if current_user %>
+    Angemeldet als: <b><%=current_user.name%></b>. <a href="/logout" class="button">Ausloggen?</a>
+  <% else %>
+    <a href="/login" class="button">Du bist nicht angemeldet. Einloggen?</a>
+  <% end %>
+  </div>
 </div>
 
-<menu>
-<% for m in ["fachschaften", "referate", "users", "motions"] do %>
-  <li><%=link_to m, "/#{m}" %></li>
+<menu id="menu">
+<% for m in [Motion, Referat, Fachschaft, User] do %>
+  <li><%=link_to m.model_name.human.pluralize, m %></li>
 <% end %>
 </menu>
 
-<% flash.each do |key, msg| %>
-    <%= content_tag :div, msg, :class => [key, " message"], :id => "notice_#{key}" %>
-    <%= content_tag :script, :type => "text/javascript" do -%>
-        setTimeout("new Effect.Fade('notice_<%= key %>');", 15000);
+  <div id="content">
+
+    <% flash.each do |key, msg| %>
+        <%= content_tag :div, msg, :class => [key, " message"], :id => "notice_#{key}" %>
+        <%= content_tag :script, :type => "text/javascript" do -%>
+            setTimeout('$("#notice_<%= key %>").slideUp("slow")', 10000);
+        <% end %>
     <% end %>
-<% end %>
 
-<%= yield %>
-
+    <%= yield %>
+  </div>
 </body>
 </html>

@@ -1,7 +1,7 @@
 <%= form_for(@user) do |f| %>
   <% if @user.errors.any? %>
     <div id="error_explanation">
-      <h2><%= pluralize(@user.errors.count, "error") %> prohibited this user from being saved:</h2>
+      <h2>Der Nutzer konnte nicht gespeichert werden, es gab <%= @user.errors.count %> Fehler.</h2>
 
       <ul>
       <% @user.errors.full_messages.each do |msg| %>
@@ -11,28 +11,24 @@
     </div>
   <% end %>
 
-  <div class="field">
-    <h2>Gruppen</h2>
-    <%= f.label :groups %><br />
-    <%= f.text_field :groups %>
-    <br/>
-    Jede Gruppe bringt Rechte. Die mächtigste ist „root“. Mehrere Gruppen mit Leerzeichen trennen.
-  </div>
+  <%= f.label :groups %>
+  <%= f.text_field :groups %>
+  <p>Jede Gruppe bringt Rechte. Die mächtigste ist „root“. Mehrere Gruppen mit Leerzeichen trennen.</p>
 
-
-  <div class="field">
-    <h2>Referate</h2>
-    <p>Referate, in denen <%= @user.name %> aktiv ist. Ein Häkchen bedeutet, dass <%= @user.name %> für die jeweilige Fachschaft abstimmen darf und deren Daten ändern kann.</p>
-  <% for referat in Referat.all %>
+  <br class="spacer"/>
+  <h3>Referate</h3>
+  <p>Referate, in denen <%= @user.name %> aktiv ist. Ein Häkchen bedeutet, dass <%= @user.name %> für die jeweilige Fachschaft abstimmen darf und deren Daten ändern kann.</p>
+  <div class="checkboxes"><% for referat in Referat.all %>
     <label>
     <%= check_box_tag "user[referat_ids][]", referat.id, @user.referate.include?(referat) %>
     <%= referat.name %></label>
-  <% end %>
-  </div>
+  <% end %></div>
+  <br class="spacer"/>
 
-  <div class="field">
-    <h2>Fachschaften</h2>
-    <p>Fachschaften, in denen <%= @user.name %> aktiv ist. Ein Häkchen bedeutet, dass <%= @user.name %> für die jeweilige Fachschaft abstimmen darf und deren Daten ändern kann.</p>
+
+  <h3>Fachschaften</h3>
+  <p>Fachschaften, in denen <%= @user.name %> aktiv ist. Ein Häkchen bedeutet, dass <%= @user.name %> für die jeweilige Fachschaft abstimmen darf und deren Daten ändern kann.</p>
+  <div class="checkboxes">
   <% for fachschaft in Fachschaft.all %>
     <label>
     <%= check_box_tag "user[fachschaft_ids][]", fachschaft.id, @user.fachschaften.include?(fachschaft) %>
@@ -41,8 +37,6 @@
   </div>
 
 
-
-  <div class="actions">
-    <%= f.submit %>
-  </div>
+  <%= f.submit :class => "button primary" %>
+  <%= link_to 'Abbrechen', users_path, :class => "button" %>
 <% end %>

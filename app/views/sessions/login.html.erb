@@ -1,10 +1,14 @@
-<h1>Login</h1>
-<p>Für die gewählte Aktion musst Du berechtigt sein. Bitte authentifiziere Dich mit Deinen FSK Login Daten.
-<form method='post' action='/auth/ldap/callback' noValidate='noValidate'>
-<input type='hidden' id='return_to' name='return_to' value='<%=params[:return_to]%>'/>
+<div class="container">
+  <h1>Login</h1>
+  <p>Für die gewählte Aktion musst Du berechtigt sein. Bitte authentifiziere Dich mit Deinen FSK Login Daten.
+  <form method='post' action='/auth/ldap/callback' noValidate='noValidate'>
+  <input type='hidden' id='return_to' name='return_to' value='<%=params[:return_to]%>'/>
 
-<label for='username'>Login:</label>
-<input type='text' id='username' name='username'/>
-<label for='password'>Password:</label>
-<input type='password' id='password' name='password'/>
-<button type='submit'>Sign In</button></form>
+  <label for='username'>Login:</label>
+  <input type='text' id='username' name='username'/><br/>
+
+  <label for='password'>Password:</label>
+  <input type='password' id='password' name='password'/><br/>
+
+  <button type='submit' class="button primary">Anmelden</button></form>
+</div>

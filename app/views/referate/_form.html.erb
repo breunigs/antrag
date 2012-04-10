@@ -1,7 +1,7 @@
 <%= form_for(@referat) do |f| %>
   <% if @referat.errors.any? %>
     <div id="error_explanation">
-      <h2><%= pluralize(@referat.errors.count, "error") %> prohibited this referat from being saved:</h2>
+      <h2>Das Referat konnte nicht gespeichert werden, es gab <%= @referat.errors.count %> Fehler.</h2>
 
       <ul>
       <% @referat.errors.full_messages.each do |msg| %>
@@ -12,14 +12,14 @@
   <% end %>
 
   <div class="field">
-    <%= f.label :name %><br />
+    <%= f.label :name %>
     <%= f.text_field :name %>
   </div>
   <div class="field">
-    <%= f.label :mail %><br />
+    <%= f.label :mail %>
     <%= f.text_field :mail %>
   </div>
   <div class="actions">
-    <%= f.submit %>
+    <%= f.submit :class=>"button primary" %>
   </div>
 <% end %>

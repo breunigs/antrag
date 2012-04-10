@@ -1,20 +1,17 @@
-<p id="notice"><%= notice %></p>
+<div class="container">
 
-<p>
-  <b>Name:</b>
-  <%= @referat.name %>
-</p>
-
-<p>
-  <b>Mail:</b>
-  <%=mail_to @referat.mail %>
-</p>
-
-<p><b>Mitglieder:</b><br/>
-  <%= @referat.users.map { |u| u.name }.join(", ") %>
-</p>
+  <h1><%= @referat.name %></h1>
 
 
+  <%=mail_to @referat.mail, nil, { :class => "single" } %>
 
-<%= link_to 'Edit', edit_referat_path(@referat) %> |
-<%= link_to 'Back', referate_path %>
+
+  <p>
+    <b>ReferentInnen:</b><br/>
+    <%= @referat.users.map { |u| u.name }.join(", ") %>
+  </p>
+
+
+  <%= link_to 'Daten bearbeiten', edit_referat_path(@referat), :class => "button primary" %>
+  <%= link_to 'Zerstören', @fachschaft, confirm: 'Referat wirklich löschen?', method: :delete, :class => "button danger" if is_current_root? %>
+</div>

@@ -1,25 +1,13 @@
-<h1>Listing referate</h1>
+<div class="container">
 
-<table>
-  <tr>
-    <th>Name</th>
-    <th>Mail</th>
-    <th></th>
-    <th></th>
-    <th></th>
-  </tr>
+<h1>Referate</h1>
 
-<% @referate.each do |referat| %>
-  <tr>
-    <td><%= referat.name %></td>
-    <td><%= referat.mail %></td>
-    <td><%= link_to 'Show', referat %></td>
-    <td><%= link_to 'Edit', edit_referat_path(referat) %></td>
-    <td><%= link_to 'Destroy', referat, confirm: 'Are you sure?', method: :delete %></td>
-  </tr>
-<% end %>
-</table>
+  <%= link_to 'Neues Referat anlegen', new_referat_path, :class => "single" if is_current_root? %>
 
-<br />
-
-<%= link_to 'New Referat', new_referat_path %>
+  <% @referate.each do |referat| %>
+    <%= link_to(referat, :class => "box") do %>
+      <h3><%= referat.name %></h3>
+      <%= referat.mail %><br/>
+    <% end %>
+  <% end %>
+</div>
