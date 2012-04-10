@@ -11,6 +11,16 @@ module UserHelper
     User.is_root?(current_user)
   end
 
+  # returns true if the current user is in the given Fachschaft. Expects
+  # fachschaft to be either the Model or its ID. Set root to false if
+  # the root user is not qualified.
+  def is_current_in_fs?(fachschaft, root = true)
+    return false unless current_user
+    return true if root && is_current_root?
+    fachschaft = Fachschaft.find(fachschaft) if fachschaft.is_a? Integer
+    fachschaft.users.include?(current_user)
+  end
+
   # checks if a user is currently logged in and redirects to the login
   # prompt if he isn't. Use it like this:
   #   return unless force_login
@@ -58,7 +68,7 @@ module UserHelper
   def force_fachschaft(fs, root_ok = true)
     return false unless force_login
     return true if root_ok && is_current_root?
-    fs = Fachschaft.find(fs) if is.is_a? Integer
+    fs = Fachschaft.find(fs) if fs.is_a? Integer
     unless fs
       flash[:error] = "Diese Fachschaft existiert gar nicht."
       redirect_to (request.referer || "/")
