@@ -1,0 +1,11 @@
+Executing the following commands should be enough to push
+the local changes to the public. Don’t forget to create a
+proper database for production mode, it is currently a sym-
+linked development.sqlite.
+
+
+rvm 1.9.3@global
+bundle install
+rake db:migrate RAILS_ENV="production"
+bundle exec rake assets:precompile
+sudo /etc/init.d/apache2 reload

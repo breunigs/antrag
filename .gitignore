@@ -13,3 +13,9 @@
 # Ignore all logfiles and tempfiles.
 /log/*.log
 /tmp
+
+# compiled images/css/js
+/public/assets
+
+# attachments
+/public/system
