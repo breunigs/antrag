@@ -1,6 +1,10 @@
 # encoding: utf-8
 
 class MotionsController < ApplicationController
+  # static page, but includes the erb and style goodies
+  def kingslanding
+  end
+
   # GET /motions
   # GET /motions.json
   def index

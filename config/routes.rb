@@ -1,26 +1,29 @@
 Antrag::Application.routes.draw do
+  root :to => "motions#kingslanding"
+
+  # common actions
   resources :motions
+
   # attachments
   get "/motions/:id/add_attachment" => "motions#add_attachment", :as => :motion_add_attachment
   get "/motions/:id/remove_attachment/:attachment_id" => "motions#remove_attachment"
-
   post "/motions/:id/store_attachment" => "motions#store_attachment", :as => :motion_store_attachment
 
+  # comments
   post "/motions/:id/store_comment" => "motions#store_comment", :as => :motion_store_comment
 
-  # financial toggles
+  # toggles
   get "/motions/:id/toggle_motion_top" => "motions#toggle_motion_top", :as => :toggle_motion_top
   get "/motions/:id/toggle_motion_fin_granted" => "motions#toggle_motion_fin_granted", :as => :toggle_motion_fin_granted
   get "/motions/:id/toggle_motion_fin_deducted" => "motions#toggle_motion_fin_deducted", :as => :toggle_motion_fin_deducted
 
-  root :to => "users#index"
-
+  # other stuff
   resources :referate
-  resources :fachschaften
   resources :users
-
+  resources :fachschaften
   match "/vote/:fachschaft_id/:motion_id" => "votes#new"
 
+  # session handlung
   match "/login" => "sessions#login"
   match "/auth/:provider/callback" => "sessions#create"
   match "/auth/failure" => "sessions#failure"

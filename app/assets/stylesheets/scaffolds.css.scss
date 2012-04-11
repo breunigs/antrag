@@ -16,6 +16,9 @@ p, ol, ul, td {
   font-size: 13px;
   line-height: 18px; }
 
+ul {
+  list-style-position:inside; }
+
 pre {
   background-color: #eee;
   padding: 10px;
@@ -42,10 +45,8 @@ div {
     font-weight:bold;
     font-size:inherit;
   }
-  ul {
-    list-style-position:inside;
   li {
-      list-style: bullet; } } }
+      list-style: bullet; } }
 
 #header {
   background: #ffffff; /* Old browsers */
@@ -350,4 +351,30 @@ div.comment:nth-child(odd) {background: #fcfcfc}
 
 br.clear {
   clear: both;
+}
+
+.motion-selector {
+  font-weight: bold;
+
+  span {
+    display:block;
+    width:30px;
+    font-size:30px;
+    float:left;
+    line-height:40px;
+    vertical-align:center;
+  }
+
+  b {
+    display:block;
+    float:left;
+    line-height:40px;
+    vertical-align:center;
+    font-size:13px;
+  }
+}
+
+.motion-selector-box {
+  float:left;
+  width:33%;
 }
