@@ -3,7 +3,7 @@
 class Attachment < ActiveRecord::Base
   has_attached_file :file
 
-  validates :motion_id, :presence => true
+  validates :motion_id, :ip, :presence => true
 
   validates_attachment :file, :presence => true,
     :size => { :in => 0..MAX_ATTACHMENT_SIZE }

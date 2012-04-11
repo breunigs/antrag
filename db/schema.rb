@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120410141833) do
+ActiveRecord::Schema.define(:version => 20120411092638) do
 
   create_table "attachments", :force => true do |t|
     t.string   "file_file_name"
@@ -21,6 +21,7 @@ ActiveRecord::Schema.define(:version => 20120410141833) do
     t.integer  "motion_id"
     t.datetime "created_at",        :null => false
     t.datetime "updated_at",        :null => false
+    t.string   "ip"
   end
 
   create_table "comments", :force => true do |t|
@@ -29,6 +30,7 @@ ActiveRecord::Schema.define(:version => 20120410141833) do
     t.text     "comment"
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
+    t.string   "ip"
   end
 
   create_table "fachschaften", :force => true do |t|

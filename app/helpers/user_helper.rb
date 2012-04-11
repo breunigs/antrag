@@ -25,8 +25,9 @@ module UserHelper
   # an array or a string/symbol.
   def is_current_in_group?(groups)
     return false unless current_user
-    groups = [groups] if groups.is_a? String
+    groups = [groups]
     groups.flatten!
+    raise "Invalid group specified. Add them in config/initializers/constants.rb" if groups.any? { |g| GROUPS[g.to_sym].nil? }
     groups.map! { |g| g.to_s }
     raise unless groups.is_a? Array
 

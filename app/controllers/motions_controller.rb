@@ -47,6 +47,7 @@ class MotionsController < ApplicationController
   end
 
   def toggle_motion_top
+    return unless force_login
     @motion = Motion.find(params[:id])
     @motion.is_top = !@motion.is_top
     if @motion.save
@@ -58,9 +59,11 @@ class MotionsController < ApplicationController
   end
 
   def toggle_motion_fin_granted
+    return unless force_group([:root, :finanzen])
     @motion = Motion.find(params[:id])
     @motion.fin_granted = !@motion.fin_granted
     if @motion.save
+      add_comment(@motion, "#{current_user.name} hat #{@motion.fin_granted ? "das Geld genehmigt" : " die Geldgenehmigung zurückgenommen"}.")
       flash[:notice] = "Status geändert, #{@motion.fin_granted ? "das Geld ist jetzt genehmigt" : "das Geld ist jetzt nicht mehr genehmigt"}. <a href='#{toggle_motion_fin_granted_path(@motion)}'>Rückgängig machen?</a>".html_safe
     else
       flash[:error] = "Konnte den Antrag nicht ändern."
@@ -69,9 +72,11 @@ class MotionsController < ApplicationController
   end
 
   def toggle_motion_fin_deducted
+    return unless force_group([:root, :finanzen])
     @motion = Motion.find(params[:id])
     @motion.fin_deducted = !@motion.fin_deducted
     if @motion.save
+      add_comment(@motion, "#{current_user.name} hat das Geld als #{@motion.fin_deducted ? " (vollständig) abgebucht " : " noch nicht, bzw. nicht vollständig abgebucht"} markiert.")
       flash[:notice] = "Status geändert, #{@motion.fin_deducted ? "das Geld wurde als (vollständig) abgebucht markiert" : "das Geld wurde als noch nicht, bzw. nicht vollständig abgebucht markiert"}. <a href='#{toggle_motion_fin_deducted_path(@motion)}'>Rückgängig machen?</a>".html_safe
     else
       flash[:error] = "Konnte den Antrag nicht ändern."
@@ -82,8 +87,9 @@ class MotionsController < ApplicationController
   # POST /motions/1/store_attachment
   def store_attachment
     @motion = Motion.find(params[:id])
-    @attachment = Attachment.create(params[:attachment])
+    @attachment = Attachment.create(params[:attachment_id])
     @attachment.motion_id = @motion.id
+    @attachment.ip = request.remote_ip
     if @attachment.save
       flash[:notice] = "Dateianhang gespeichert."
       u = current_user ? (current_user.name + " hat ") : ""
@@ -95,11 +101,28 @@ class MotionsController < ApplicationController
     end
   end
 
+  # GET /motions/1/remove_attachment/1
+  def remove_attachment
+    return unless force_group(:root)
+    @motion = Motion.find(params[:id])
+    @attachment = @motion.attachments.find_by_id(params[:attachment_id])
+    if @attachment.nil?
+      flash[:error] = "Der ausgewählte Anhang existiert icht oder gehört nicht zum Antrag."
+      redirect_to motion_path(@motion) and return
+    end
+    add_comment(@motion, "#{current_user.name} hat den „#{@attachment.file_name}“ Anhang gelöscht.")
+    @attachment.file = nil
+    @attachment.save
+    @attachment.destroy
+    redirect_to motion_path(@motion) + "#attachments"
+  end
+
   # POST /motions/1/store_comment
   def store_comment
     @motion = Motion.find(params[:id])
     @comment = Comment.create(params[:comment])
     @comment.motion_id = @motion.id
+    @comment.ip = request.remote_ip
     @comment.user_id = current_user.id if current_user
     @comment.save
     redirect_to motion_path(@motion) + "#last_comment"
@@ -140,6 +163,7 @@ class MotionsController < ApplicationController
   # DELETE /motions/1
   # DELETE /motions/1.json
   def destroy
+    return unless force_group(:root)
     @motion = Motion.find(params[:id])
     @motion.destroy
 

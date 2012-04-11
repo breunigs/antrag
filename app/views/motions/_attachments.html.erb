@@ -1,7 +1,7 @@
 <div class="container" id="attachments">
   <h2>Anhänge</h2>
   <% @motion.attachments.each do |a|  %>
-    <a class="smallbox" href="<%= a.file.url %>">
+    <a class="smallbox attachment" href="<%= a.file.url %>" data-id="<%=a.id%>" data-name="<%=a.file_name%>">
       <img src="<%=a.icon_path%>" alt="FileIcon"/>
       <b><%= a.file_name %></b><br/>
       <%= number_to_human_size(a.file_size) %>, <%= a.file_content_type %><br/>
@@ -12,4 +12,24 @@
   <% end %>
   <br style="clear:both"/>
   <%=link_to "Neuen Anhang hinzufügen", motion_add_attachment_path, :class => "button primary" %>
+
+  <% if is_current_root? %>
+    <p>Zum Löschen von Anhängen auf diese klicken und die Taste gedrückt halten (mindestens drei Sekunden). Eine Bestätigungsmeldung erscheint.</p>
+
+    <script>
+      var timeoutId = 0;
+      $('a.attachment').mousedown(function(obj) {
+          var id = $(this).attr("data-id");
+          var name = $(this).attr("data-name");
+          var f = function () {
+            if(confirm('„'+name+'“ wirklich löschen?')) {
+              window.location = "/motions/<%=@motion.id%>/remove_attachment/" + id;
+            }
+          }
+          timeoutId = setTimeout(f, 3000);
+      }).bind('mouseup mouseleave', function() {
+          clearTimeout(timeoutId);
+      });
+    </script>
+  <% end %>
 </div>
