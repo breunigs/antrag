@@ -6,7 +6,7 @@ Antrag::Application.routes.draw do
 
   # attachments
   get "/motions/:id/add_attachment" => "motions#add_attachment", :as => :motion_add_attachment
-  get "/motions/:id/remove_attachment/:attachment_id" => "motions#remove_attachment"
+  get "/motions/:id/remove_attachment/:attachment" => "motions#remove_attachment"
   post "/motions/:id/store_attachment" => "motions#store_attachment", :as => :motion_store_attachment
 
   # comments

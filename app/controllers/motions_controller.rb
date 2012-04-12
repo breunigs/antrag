@@ -91,9 +91,11 @@ class MotionsController < ApplicationController
   # POST /motions/1/store_attachment
   def store_attachment
     @motion = Motion.find(params[:id])
-    @attachment = Attachment.create(params[:attachment_id])
+    @attachment = Attachment.create(params[:attachment])
     @attachment.motion_id = @motion.id
     @attachment.ip = request.remote_ip
+
+    pp @attachment
     if @attachment.save
       flash[:notice] = "Dateianhang gespeichert."
       u = current_user ? (current_user.name + " hat ") : ""
@@ -109,7 +111,7 @@ class MotionsController < ApplicationController
   def remove_attachment
     return unless force_group(:root)
     @motion = Motion.find(params[:id])
-    @attachment = @motion.attachments.find_by_id(params[:attachment_id])
+    @attachment = @motion.attachments.find_by_id(params[:attachment])
     if @attachment.nil?
       flash[:error] = "Der ausgewählte Anhang existiert icht oder gehört nicht zum Antrag."
       redirect_to motion_path(@motion) and return

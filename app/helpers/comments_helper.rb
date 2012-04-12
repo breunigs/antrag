@@ -5,8 +5,6 @@ module CommentsHelper
   # update/status comments. Comments will be put in italics. Stores the current user if
   # available, otherwise some other status information.
   def add_comment(motion, text)
-    raise "May only add comments if user is currently logged in." unless current_user
-
     @comment = Comment.new({:comment => "*#{text}*"})
     @comment.ip = request.remote_ip
     @comment.user_id = current_user
