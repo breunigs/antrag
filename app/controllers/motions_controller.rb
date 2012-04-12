@@ -136,7 +136,11 @@ class MotionsController < ApplicationController
   # POST /motions.json
   def create
     @motion = Motion.new(params[:motion])
-
+    uuid = UUIDTools::UUID.timestamp_create.to_s
+    while Motion.find_by_uuid(uuid) != nil
+      uuid = UUIDTools::UUID.timestamp_create.to_s
+    end
+    @motion.uuid = uuid
     respond_to do |format|
       if @motion.save
         format.html { redirect_to @motion, notice: 'Motion was successfully created.' }

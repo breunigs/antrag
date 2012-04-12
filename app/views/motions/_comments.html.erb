@@ -7,6 +7,7 @@
         vor <%= time_ago_in_words c.created_at %> von <b><%= c.get_name %></b>
       </span>
       <%=raw BlueCloth.new(auto_link(c.comment)).to_html %>
+      <div class="breakfix"></div>
     </div>
   <% end %>
 

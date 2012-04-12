@@ -1,13 +1,15 @@
 # encoding: utf-8
 
 class Motion < ActiveRecord::Base
+  include Extensions::UUID
+
   # only make the attributes mass-writable that may be entered by the
   # applicant.
   attr_accessible :kind, :title, :text, :contact_mail, :contact_name
   attr_accessible :contact_fon, :fin_expected_amount
 
   # these need to be present
-  validates :kind, :title, :text, :contact_mail, :presence => true
+  validates :kind, :title, :text, :contact_mail, :uuid, :presence => true
 
   # if present, please be numbers
   validates :fin_expected_amount, :fin_charged_amount, :numericality => true, :allow_blank => true

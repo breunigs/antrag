@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120411092638) do
+ActiveRecord::Schema.define(:version => 20120412064747) do
 
   create_table "attachments", :force => true do |t|
     t.string   "file_file_name"
@@ -47,7 +47,7 @@ ActiveRecord::Schema.define(:version => 20120411092638) do
     t.integer "fachschaft_id"
   end
 
-  create_table "motions", :force => true do |t|
+  create_table "motions", :id => false, :force => true do |t|
     t.string   "kind"
     t.string   "title"
     t.text     "text"
@@ -62,8 +62,9 @@ ActiveRecord::Schema.define(:version => 20120411092638) do
     t.float    "fin_charged_amount"
     t.boolean  "fin_deducted"
     t.boolean  "fin_granted"
-    t.datetime "created_at",          :null => false
-    t.datetime "updated_at",          :null => false
+    t.datetime "created_at",                        :null => false
+    t.datetime "updated_at",                        :null => false
+    t.string   "uuid",                :limit => 36
   end
 
   create_table "referate", :force => true do |t|

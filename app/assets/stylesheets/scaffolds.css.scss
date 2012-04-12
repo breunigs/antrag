@@ -157,7 +157,7 @@ div {
   box-shadow: 0 0 15px rgba(255, 0, 0, 0.3);
 }
 
-.warn:before {
+.warn:before, .warning:before {
   color: rgba(255, 217, 0, 0.4);
   content: "!";
   float: right;
@@ -167,7 +167,7 @@ div {
   margin-right:3px;
 }
 
-.warn {
+.warn, .warning {
   box-shadow: 0 0 15px rgba(255, 217, 0, 0.3);
 }
 
@@ -343,6 +343,10 @@ div.comment {
   &:hover {
     border-top:1px solid #eee;
     border-bottom:1px solid #eee;
+  }
+  div.breakfix {
+    clear:both;
+    margin-bottom:-12px;
   }
 }
 

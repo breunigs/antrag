@@ -12,8 +12,12 @@ gem "paperclip", "~> 3.0"
 # convert markdown to html
 gem 'bluecloth'
 # auto url detection	
-
 gem 'rinku', '~> 1.2.2', :require => 'rails_rinku'
+
+# random IDs for motion
+gem 'uuidtools'
+
+
 
 # Gems used only for assets and not required
 # in production environments by default.

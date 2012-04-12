@@ -1,36 +1,37 @@
-
-<div class="container">
-  <div style="float:left">
-    <h2>Abstimmungsergebnisse</h2>
-    <table>
-      <tr>
-        <th>Fachschaft</th><th>Ergebnis</th><th>Letzte Änderung</th>
-      </tr>
-      <%
-      votes = {}
-      votes["Enthaltung"] ||= 0
-      votes["Ablehnung"] ||= 0
-      votes["Zustimmung"] ||= 0
-      @motion.votes.each do |v|
-        votes[v.result_printable] += 1
-      %>
+<% unless @motion.votes.empty? %>
+  <div class="container">
+    <div style="float:left">
+      <h2>Abstimmungsergebnisse</h2>
+      <table>
         <tr>
-          <td><%=link_to v.fachschaft.name, v.fachschaft %></td>
-          <td><%= v.result_printable %></td>
-          <td title="Genaue Zeit: <%=v.updated_at%>">vor <%= time_ago_in_words v.updated_at %></td>
+          <th>Fachschaft</th><th>Ergebnis</th><th>Letzte Änderung</th>
         </tr>
+        <%
+        votes = {}
+        votes["Enthaltung"] ||= 0
+        votes["Ablehnung"] ||= 0
+        votes["Zustimmung"] ||= 0
+        @motion.votes.each do |v|
+          votes[v.result_printable] += 1
+        %>
+          <tr>
+            <td><%=link_to v.fachschaft.name, v.fachschaft %></td>
+            <td><%= v.result_printable %></td>
+            <td title="Genaue Zeit: <%=v.updated_at%>">vor <%= time_ago_in_words v.updated_at %></td>
+          </tr>
+        <% end %>
+      </table>
+      <br class="spacer"/>
+      <p><b>Zusammenfassung:</b></p><table>
+      <% votes.sort_by { |name, count| count }.each do |name, count|%>
+         <tr style="background:#fff"><td><%= name %>:</td><td style="text-align:right;font-family:monospace"><%= count %></td></tr>
       <% end %>
-    </table>
-    <br class="spacer"/>
-    <p><b>Zusammenfassung:</b></p><table>
-    <% votes.sort_by { |name, count| count }.each do |name, count|%>
-       <tr style="background:#fff"><td><%= name %>:</td><td style="text-align:right;font-family:monospace"><%= count %></td></tr>
-    <% end %>
-    </table>
-  </div>
-  <div id="votes_pie" style="width: 600px; height: 270px; float:right"></div>
+      </table>
+    </div>
+    <div id="votes_pie" style="width: 600px; height: 270px; float:right"></div>
 
-  <script>
-  $(document).ready(function() { new Highcharts.Chart({chart: { renderTo: 'votes_pie' }, title: { text: null }, tooltip: { enabled: false }, plotOptions: { series: { states: { hover: { enabled: false } } }, pie: { animation: false, dataLabels: { enabled: true, color: '#000000', connectorColor: '#ddd', formatter: function() { return "≈ " + Math.round(this.percentage) + '% <b>' + this.point.name + '</b>'; } } } }, credits: false, colors: ['#AA4643', '#4572A7', '#89A54E'], series: [{ type: 'pie', data: [ <%=raw votes.sort_by { |name, count| name }.map { |name, count| "[\"#{name}\", #{count}]" }.join(",") %> ] }] }); });
-  </script>
-</div>
+    <script>
+    $(document).ready(function() { new Highcharts.Chart({chart: { renderTo: 'votes_pie' }, title: { text: null }, tooltip: { enabled: false }, plotOptions: { series: { states: { hover: { enabled: false } } }, pie: { animation: false, dataLabels: { enabled: true, color: '#000000', connectorColor: '#ddd', formatter: function() { return "≈ " + Math.round(this.percentage) + '% <b>' + this.point.name + '</b>'; } } } }, credits: false, colors: ['#AA4643', '#4572A7', '#89A54E'], series: [{ type: 'pie', data: [ <%=raw votes.sort_by { |name, count| name }.map { |name, count| "[\"#{name}\", #{count}]" }.join(",") %> ] }] }); });
+    </script>
+  </div>
+<% end %>
