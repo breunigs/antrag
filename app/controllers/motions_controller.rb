@@ -3,6 +3,7 @@
 class MotionsController < ApplicationController
   # static page, but includes the erb and style goodies
   def kingslanding
+    @motion = Motion.new
   end
 
   # GET /motions

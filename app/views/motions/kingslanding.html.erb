@@ -1,40 +1,280 @@
+<%
+name = {}
+name[:finanz] = "Finanzantrag"
+name[:inhalt] = "Inhaltlicher Antrag"
+name[:reisekosten] = "Reisekostenantrag"
+name[:orientierung] = "Orientierungsveranstaltung"
+name[:honorar] = "Vortrag/Honorar"
+name[:material] = "Beschaffungsantrag"
+name[:sonstiges] = "Sonstiges"
+
+%>
+
+<noscript>
+  <div class="message error">
+    Du hast <b>JavaScript</b> in Deinem Browser <b>deaktiviert</b>. Dies ist aber notwendig um neue Anträge erstellen zu können, da es ohne sehr aufwendig für Dich wäre. Da in jedem normalen Browser JavaScript standardmäßig eingeschaltet ist, nehme ich an Du weißt an welchen Schrauben Du drehen musst.
+  </div>
+</noscript>
+
 <div class="container">
   <h1>Anträge stellen</h1>
   <p>Wähle aus, welchen Antrag Du stellen möchtest. Wenn Du Dir nicht sicher bist wähle den Antrag, der am ehesten hinkommt. Im Zweifel kann der Typ später noch geändert werden, wobei es schneller geht, wenn Du sofort den richtigen ausgewählt hast.</p>
 
-  <div class="motion-selector-box">
-    <a class="button motion-selector" href="">
-      <span>€</span>
-      <b>Finanzantrag</b>
-    </a>
-    <ul>
-      <li>Wenn Du Geld brauchst</li>
-      <li>Wenn Du schon immer mal mit Alexander Schubert kommunizieren wolltest</li>
-      <li>weil es geht</li>
-    </ul>
-  </div>
+  <%= form_for(@motion) do |f| %>
 
-  <div class="motion-selector-box">
-    <a class="button motion-selector" href="">
-      <span>P</span>
-      <b>Positionierungsantrag</b>
-    </a>
-    <ul>
-      <li>weil P ein toller Buchstabe ist</li>
-    </ul>
-  </div>
+    <%##################################################################%>
+    <div class="step" data-step="1" style="display:block">
+      <h3>Enthält Dein Antrag eine finanzielle Komponente?</h3>
+      <div class="motion-selector-box">
+        <a class="button motion-selector">
+          <span>€</span>
+          <b><%=name[:finanz]%></b>
+        </a>
+        <ul>
+          <li>Orientierungsveranstaltungen</li>
+          <li>Reisekosten</li>
+          <li>Honorar für Vortragende</li>
+          <li>Materialbeschaffung</li>
+          <li>…und alles andere was „Geld“ beinhaltet</li>
+        </ul>
+      </div>
 
-  <div class="motion-selector-box">
-    <a class="button motion-selector" href="">
-      <span>B</span>
-      <b>B… keine Ahnung</b>
-    </a>
-    <ul>
-      <li>man denke sich hier eine  sinnvolle Liste hin</li>
-      <li>oder sowas</li>
-    </ul>
-  </div>
+      <div class="motion-selector-box">
+        <a class="button motion-selector">
+          <span style="margin-top:-4px;">◌</span>
+          <b><%=name[:inhalt]%></b>
+        </a>
+        <ul>
+          <li>Besetzungsanträge</li>
+          <li>Positionierungsanträge</li>
+          <li>…und alles andere diskussionswürdige</li>
+        </ul>
+      </div>
+      <br class="clear"/>
+    </div>
+
+    <div class="folded" data-step="1">
+      Antragstyp: <span></span>
+    </div>
+
+    <%##################################################################%>
+
+    <div class="step" data-step="2" data-check="1=<%=name[:finanz]%>">
+      <div class="motion-selector-box">
+        <a class="button motion-selector">
+          <span>1</span>
+          <b><%=name[:orientierung]%></b>
+        </a>
+        <ul>
+          <li>Ersti-Führungen o.ä.</li>
+        </ul>
+      </div>
+
+      <div class="motion-selector-box">
+        <a class="button motion-selector">
+          <span>✈</span>
+          <b><%=name[:reisekosten]%></b>
+        </a>
+        <ul>
+          <li>Du/ihr möchtet eine Veranstaltung besuchen</li>
+        </ul>
+      </div>
+
+      <div class="motion-selector-box">
+        <a class="button motion-selector">
+          <span>∿</span>
+          <b><%=name[:honorar]%></b>
+        </a>
+        <ul>
+          <li>ihr möchtet einen Vortragenden einladen</li>
+        </ul>
+      </div>
+
+      <div class="motion-selector-box">
+        <a class="button motion-selector">
+          <span>¶</span>
+          <b><%=name[:material]%></b>
+        </a>
+        <ul>
+          <li>Möbel</li>
+          <li>Büromaterialien</li>
+        </ul>
+      </div>
+
+      <div class="motion-selector-box">
+        <a class="button motion-selector">
+          <span>?</span>
+          <b><%=name[:sonstiges]%></b>
+        </a>
+        <ul>
+          <li>Wenn die anderen Sachen nicht passen</li>
+          <li>„Freitext“</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="step" data-step="2" data-check="1=<%=name[:inhalt]%>">
+        inhaltlich only
+    </div>
+
+    <div class="folded" data-step="2" data-check="1=<%=name[:finanz]%>">
+      Kategorie: <span></span>
+    </div>
+
+    <div class="folded" data-step="2" data-check="1=<%=name[:inhalt]%>">
+      INHALT <span></span>
+    </div>
+
+
+    <%##################################################################%>
+
+
+    <div class="step" data-step="3" data-check="1=<%=name[:finanz]%>&2=<%=name[:orientierung]%>">
+        <%= render_motion_form(f, MOTION_ORIENTIERUNG) %>
+        <a class="button nextstep primary">Nächster Schritt</a>
+    </div>
+
+    <div class="folded" data-step="3" data-check="1=<%=name[:finanz]%>">
+      Antragsdetails
+    </div>
+
+    <div class="step" data-step="4">
+      <div class="field">
+        <%= f.label :title %>
+        <%= f.text_field :title %>
+        <p>Gib bitte einen aussagekräftigen, zusammenfassenden Titel an. Er wird v.a. zur internen Verwaltung verwendet.</p>
+      </div>
+      <div class="field">
+        <%= f.label :text %>
+        <%= f.text_area :text %>
+        <p>Begründe, warum der Antrag angenommen werden sollte. Für regelmäßige Veranstaltungen, wie etwa Erstieinführungen reicht in der Regel ein Satz.</p>
+      </div>
+      <div class="field">
+        <%= f.label :contact_mail %>
+        <%= f.text_field :contact_mail %>
+        <p><b>Deine</b> E-Mail Adresse. Sie muss gültig sein, da über sie die weitere Kommunikation erfolgt. Sie kann aber anonym sein.</p>
+      </div>
+      <div class="field">
+        <%= f.label :contact_name %>
+        <%= f.text_field :contact_name %>
+        <p>Optional Dein Name, falls man Dich auch „richtig“ ansprechen können soll.</p>
+      </div>
+      <div class="field">
+        <%= f.label :contact_fon %>
+        <%= f.text_field :contact_fon %>
+      </div>
+    </div>
+
+    <br class="clear"/>
+    <a class="button" id="backbutton">Schritt zurück</a>
+
+  <% end %>
 </div>
+
+<script>
+  var currentStep = 1;
+  // automatically shows/hides buttons and step-divs based on currentStep
+  function stepMagic() {
+    console.log("Setting up for step=" + currentStep);
+    // the 99 is only a safeguard
+    for(i = 1; i< 99; i++) {
+      var s = $("div.step[data-step="+i+"]");
+      if(s.length == 0)
+        break;
+
+      var f = $("div.folded[data-step="+i+"]");
+      if(i == currentStep) { // show
+         stepShowStep(s, f);
+      } else if(i > currentStep) { // hide both
+        stepShowNone(s, f);
+      } else { // prior to current ones, show only folded
+        stepShowFolded(s, f);
+      }
+    }
+
+    if(currentStep == 1)
+      $('#backbutton').hide();
+    else
+      $('#backbutton').show();
+  }
+
+  function stepShowNone(s, f) {
+    checkAndAnimate(s, "hide");
+    checkAndAnimate(f, "hide");
+  }
+
+  function stepShowStep(s, f) {
+    checkAndAnimate(s, "show");
+    checkAndAnimate(f, "hide");
+  }
+
+  function stepShowFolded(s, f) {
+    checkAndAnimate(s, "hide");
+    checkAndAnimate(f, "show");
+  }
+
+  // Looks if obj has a data-check attribute and sees if these
+  // conditions are true. If they are, the action will be executed
+  // on obj.
+  function checkAndAnimate(obj, action) {
+
+    // loop over objects given. If there's a 2a and 2b step there
+    // actually may be multiple elements.
+    obj.each(function(i, obj) {
+      works = true;
+      // enable jquery magic
+      obj = $(obj);
+      // check
+      if(obj.attr("data-check")) {
+        console.log(obj.attr("data-check"));
+        $(obj.attr("data-check").split("&")).each(function(i, c) {
+          if(!works)
+            return;
+          var cc = c.split("=");
+          var state = $($("div.folded[data-step="+cc[0]+"] span")[0]).text();
+          //console.log("   " + c + "  == " + state);
+          if(state != cc[1])
+            works = false;
+        });
+      }
+      // execute
+      if(works) {
+        //console.log("Executing " + action + " on " + obj);
+        switch(action) {
+          case "hide":
+            if( obj.is(":visible")) obj.slideUp("slow");
+            break;
+          case "show":
+            if(!obj.is(":visible")) obj.slideDown("slow");
+            break;
+        }
+      }
+    });
+  }
+
+  $("#backbutton").click(function(obj) {
+    currentStep -= 1;
+    stepMagic();
+  });
+
+  $("a.nextstep").click(function(obj) {
+    currentStep += 1;
+    stepMagic();
+  });
+
+  $('div.step a.motion-selector').click(function(obj) {
+    var content = $(this).contents("b").text();
+    var stepDiv = $(this).parents("div.step");
+    var step = stepDiv.attr("data-step");
+    var folded = $("div.folded[data-step="+step+"]")
+    // update chosen text
+    folded.children("span").text(content);
+    currentStep = step*1 + 1;
+    stepMagic();
+  });
+
+  stepMagic();
+</script>
 
 <div class="container">
   <h2>Andere Aufgaben</h2>

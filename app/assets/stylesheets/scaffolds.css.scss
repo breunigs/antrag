@@ -28,6 +28,14 @@ div {
   &.field, &.actions {
     margin-bottom: 10px; } }
 
+div.field p {
+  margin-left:110px;
+  color:#888;
+  font-style:italic;
+  margin-top:0;
+
+}
+
 #notice {
   color: green; }
 
@@ -171,7 +179,7 @@ div {
   box-shadow: 0 0 15px rgba(255, 217, 0, 0.3);
 }
 
-h1, h2 {
+h1, h2, h3 {
   margin-bottom: 15px;
 }
 
@@ -184,6 +192,8 @@ p {
 label {
   width:100px;
   display:inline-block;
+  vertical-align:top;
+  margin-top:8px;
 }
 
 form {
@@ -213,6 +223,10 @@ select {
   background-color: #fbfbfb;
   background-image: -moz-linear-gradient(#ffffff, #fbfbfb);
   font-size: 13px;
+}
+
+textarea, input {
+  width:30em;
 }
 
 textarea.comment {
@@ -353,7 +367,7 @@ div.comment {
 div.comment:nth-child(even) {background: #fff}
 div.comment:nth-child(odd) {background: #fcfcfc}
 
-br.clear {
+.clear {
   clear: both;
 }
 
@@ -380,5 +394,18 @@ br.clear {
 
 .motion-selector-box {
   float:left;
-  width:33%;
+  width:25em;
+}
+
+div.folded {
+  border-bottom:1px #eee solid;
+  font-size:16px;
+  display: none;
+  margin-bottom:15px;
+}
+
+/* hide them by default. The first will be shown by a style attribute
+ * and the other are later hanlded by javascript */
+div.step, div.folded {
+  display:none;
 }

@@ -205,6 +205,7 @@ de:
     mail: "E-Mail"
     groups: "Gruppen"
     file: "Datei"
+    title: "Titel"
 
   activerecord:
     # rename the models
@@ -217,4 +218,7 @@ de:
     attributes:
       fachschaft:
         url: "Homepage"
+      motion:
+        contact_fon: "Telefonnummer"
+        contact_mail: "E-Mail"
 
