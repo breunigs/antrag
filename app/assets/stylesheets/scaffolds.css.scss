@@ -136,7 +136,7 @@ div.field p {
   margin-bottom:20px;
 }
 
-.notice:before {
+div.notice:before {
   color: rgba(0, 0, 255, 0.1);
   content: "i";
   float: right;
@@ -151,7 +151,7 @@ div.field p {
 }
 
 
-.error:before {
+div.error:before {
   color: rgba(255, 0, 0, 0.1);
   content: "⨉";
   float: right;
@@ -165,7 +165,7 @@ div.field p {
   box-shadow: 0 0 15px rgba(255, 0, 0, 0.3);
 }
 
-.warn:before, .warning:before {
+div.warn:before, div.warning:before {
   color: rgba(255, 217, 0, 0.4);
   content: "!";
   float: right;
@@ -177,6 +177,11 @@ div.field p {
 
 .warn, .warning {
   box-shadow: 0 0 15px rgba(255, 217, 0, 0.3);
+}
+
+label.error, label.warn, label.warning, label.notice {
+  box-shadow: none !important;
+  width:auto !important;
 }
 
 h1, h2, h3 {
@@ -212,6 +217,10 @@ button:focus,
   outline: none;
 }
 label, input[type="button"], input[type="submit"], input[type=reset], input[type="image"], button { cursor: pointer; }
+
+input[type="button"], input[type="submit"], input[type=reset], input[type="image"], button {
+  width:auto !important;
+}
 
 input,
 textarea,
@@ -395,6 +404,9 @@ div.comment:nth-child(odd) {background: #fcfcfc}
 .motion-selector-box {
   float:left;
   width:25em;
+  ul {
+    margin-bottom:15px;
+  }
 }
 
 div.folded {

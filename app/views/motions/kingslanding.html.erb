@@ -22,6 +22,18 @@ name[:sonstiges] = "Sonstiges"
 
   <%= form_for(@motion) do |f| %>
 
+    <% if @motion.errors.any? %>
+      <div id="error_explanation" style="margin-bottom:15px;color:red;background:#fff;">
+        <h2>Der Antrag konnte nicht eingereicht werden, es gab <%= @motion.errors.count %> Fehler.</h2>
+
+        <ul>
+        <% @motion.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+        </ul>
+      </div>
+    <% end %>
+
     <%##################################################################%>
     <div class="step" data-step="1" style="display:block">
       <h3>Enthält Dein Antrag eine finanzielle Komponente?</h3>
@@ -141,17 +153,17 @@ name[:sonstiges] = "Sonstiges"
     <div class="step" data-step="4">
       <div class="field">
         <%= f.label :title %>
-        <%= f.text_field :title %>
+        <%= f.text_field :title, :class => "required" %>
         <p>Gib bitte einen aussagekräftigen, zusammenfassenden Titel an. Er wird v.a. zur internen Verwaltung verwendet.</p>
       </div>
       <div class="field">
-        <%= f.label :text %>
-        <%= f.text_area :text %>
+        <%= f.label :text, "Begründung/Beschreibung" %>
+        <%= f.text_area :text, :class => "required" %>
         <p>Begründe, warum der Antrag angenommen werden sollte. Für regelmäßige Veranstaltungen, wie etwa Erstieinführungen reicht in der Regel ein Satz.</p>
       </div>
       <div class="field">
         <%= f.label :contact_mail %>
-        <%= f.text_field :contact_mail %>
+        <%= f.text_field :contact_mail, :class => "required email" %>
         <p><b>Deine</b> E-Mail Adresse. Sie muss gültig sein, da über sie die weitere Kommunikation erfolgt. Sie kann aber anonym sein.</p>
       </div>
       <div class="field">
@@ -163,6 +175,8 @@ name[:sonstiges] = "Sonstiges"
         <%= f.label :contact_fon %>
         <%= f.text_field :contact_fon %>
       </div>
+
+      <%= f.submit :class => "button primary" %>
     </div>
 
     <br class="clear"/>
@@ -175,7 +189,7 @@ name[:sonstiges] = "Sonstiges"
   var currentStep = 1;
   // automatically shows/hides buttons and step-divs based on currentStep
   function stepMagic() {
-    console.log("Setting up for step=" + currentStep);
+    //console.log("Setting up for step=" + currentStep);
     // the 99 is only a safeguard
     for(i = 1; i< 99; i++) {
       var s = $("div.step[data-step="+i+"]");
@@ -226,7 +240,7 @@ name[:sonstiges] = "Sonstiges"
       obj = $(obj);
       // check
       if(obj.attr("data-check")) {
-        console.log(obj.attr("data-check"));
+        //console.log(obj.attr("data-check"));
         $(obj.attr("data-check").split("&")).each(function(i, c) {
           if(!works)
             return;
@@ -258,8 +272,10 @@ name[:sonstiges] = "Sonstiges"
   });
 
   $("a.nextstep").click(function(obj) {
-    currentStep += 1;
-    stepMagic();
+    if($("form.new_motion").valid()) {
+      currentStep += 1;
+      stepMagic();
+    }
   });
 
   $('div.step a.motion-selector').click(function(obj) {
@@ -273,7 +289,10 @@ name[:sonstiges] = "Sonstiges"
     stepMagic();
   });
 
-  stepMagic();
+  $(document).ready(function(){
+    stepMagic();
+    $("form.new_motiontion").validate();
+  });
 </script>
 
 <div class="container">

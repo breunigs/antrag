@@ -4,15 +4,18 @@ module MotionsHelper
     data[:fields].each do |group|
       s << "<b>#{group[:group]}</b><br/>"
       group[:fields].each do |field|
-        name = "dynamic_" + field[:name].gsub("&shy;", "").gsub(/[^a-z0-9]/i, "_")
+        name_clean = field[:name].gsub("&shy;", "").gsub(/[^a-z0-9]/i, "_")
+        name = "dynamic[#{name_clean}]"
         s << "<div class=\"field\">"
         s << "<label for=\"#{name}\">#{field[:name]}</label>"
+        css = field[:optional] ? "" : "required"
+        v = params[:dynamic][name_clean] if params && params[:dynamic]
         case field[:type]
-          when :integer then s << number_field_tag(name, "0")
-          when :float   then s << number_field_tag(name, "0.0")
-          when :text    then s << text_area_tag(name, "", :placeholder => field[:placeholder])
-          when :string  then s << text_field_tag(name, "", :placeholder => field[:placeholder])
-          when :date    then s << date_select(name, "Wtf")
+          when :integer then s << number_field_tag(name, v ? v: "0",   :class => css)
+          when :float   then s << number_field_tag(name, v ? v: "0.0", :class => css)
+          when :text    then s << text_area_tag(   name, v ? v: "",    :placeholder => field[:placeholder], :class => css)
+          when :string  then s << text_field_tag(  name, v ? v: "",    :placeholder => field[:placeholder], :class => css)
+          when :date    then s << date_select("", name, :class => css)
           else raise "Field type is unimplemented: #{field[:type]}"
         end
         s << "<p>#{field[:info]}</p>" if field[:info]
@@ -30,6 +33,7 @@ module MotionsHelper
     raise "No autocompleter available for #{klass}" if t.nil? && !klass.nil?
     return "" unless t
     t.map! { |x| '"' + escape_javascript(x) + '"' }
+    name = name.gsub(/[\[\]]/, "_").gsub(/_$/, "")
     "<script>
       $(document).ready(function () {
         console.log($(\"##{name}\"));

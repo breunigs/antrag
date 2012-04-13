@@ -29,17 +29,6 @@ class MotionsController < ApplicationController
     end
   end
 
-  # GET /motions/new
-  # GET /motions/new.json
-  def new
-    @motion = Motion.new
-
-    respond_to do |format|
-      format.html # new.html.erb
-      format.json { render json: @motion }
-    end
-  end
-
   # GET /motions/1/edit
   def edit
     @motion = Motion.find(params[:id])
@@ -149,7 +138,7 @@ class MotionsController < ApplicationController
         format.html { redirect_to @motion, notice: 'Motion was successfully created.' }
         format.json { render json: @motion, status: :created, location: @motion }
       else
-        format.html { render action: "new" }
+        format.html { render action: "kingslanding" }
         format.json { render json: @motion.errors, status: :unprocessable_entity }
       end
     end
