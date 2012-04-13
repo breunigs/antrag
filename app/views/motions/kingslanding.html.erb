@@ -140,17 +140,9 @@ name[:sonstiges] = "Sonstiges"
 
     <%##################################################################%>
 
+    <%= render_motion_form(f, MOTION_ORIENTIERUNG, 3, "1=#{name[:finanz]}&2=#{name[:orientierung]}") %>
 
-    <div class="step" data-step="3" data-check="1=<%=name[:finanz]%>&2=<%=name[:orientierung]%>">
-        <%= render_motion_form(f, MOTION_ORIENTIERUNG) %>
-        <a class="button nextstep primary">Nächster Schritt</a>
-    </div>
-
-    <div class="folded" data-step="3" data-check="1=<%=name[:finanz]%>">
-      Antragsdetails
-    </div>
-
-    <div class="step" data-step="4">
+    <div class="step" data-step="99">
       <div class="field">
         <%= f.label :title %>
         <%= f.text_field :title, :class => "required" %>

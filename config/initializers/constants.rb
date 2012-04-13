@@ -9,7 +9,7 @@ GROUPS = {:finanzen => "finanzen", :root => "root" }
 
 MOTION_ORIENTIERUNG = {
   :fields => [
-    { :group => "zur Veranstaltung", :fields => [
+    { :group => "zur Veranstaltung", :summary => "Veranstaltung „'''Thema'''“", :fields => [
       { :name => "Veranstalter", :placeholder => "z.B. Fachschaft", :autocomplete => :Fachschaft, :type => :string},
       { :name => "Ort", :type => :string },
       { :name => "Datum", :type => :date },
