@@ -7,7 +7,6 @@ name[:orientierung] = "Orientierungsveranstaltung"
 name[:honorar] = "Vortrag/Honorar"
 name[:material] = "Beschaffungsantrag"
 name[:sonstiges] = "Sonstiges"
-
 %>
 
 <noscript>
@@ -143,6 +142,7 @@ name[:sonstiges] = "Sonstiges"
     <%= render_motion_form(f, MOTION_ORIENTIERUNG, 3, "1=#{name[:finanz]}&2=#{name[:orientierung]}") %>
 
     <div class="step" data-step="99">
+      <h3>Begründung und Kontaktdaten</h3>
       <div class="field">
         <%= f.label :title %>
         <%= f.text_field :title, :class => "required" %>
@@ -168,7 +168,8 @@ name[:sonstiges] = "Sonstiges"
         <%= f.text_field :contact_fon %>
       </div>
 
-      <%= f.submit :class => "button primary" %>
+      <p>Nach diesem Schritt wird Dein Antrag gespeichert. Auf der nächsten Seite kannst Du noch Dateien hinzufügen oder ergänzende Kommentare abgeben. Eine Korrektur ist danach aber nicht mehr möglich.</p>
+      <%= f.submit :class => "button primary", :disable_with => "Bitte warten" %>
     </div>
 
     <br class="clear"/>
@@ -179,14 +180,49 @@ name[:sonstiges] = "Sonstiges"
 
 <script>
   var currentStep = 1;
+  var currentVisibleStep = [];
+  var lastKnownMaxStep = 0;
   // automatically shows/hides buttons and step-divs based on currentStep
-  function stepMagic() {
+  function stepMagic(action) {
+    if(action == +1) {
+      if(!$("form.new_motion").valid()) {
+        return;
+      }
+      currentStep++;
+    } else if(action == -1)
+      currentStep--;
+
+    // try stepping first
+    currentVisibleStep = [];
+    stepFolding();
+    // if there’s no main box visible, try to fill the gaps. For +1 we
+    // know the next box will be the last one. For going back, use the
+    // last one that worked
+    if(currentVisibleStep.length == 0 && action == +1) {
+      currentStep = 99;
+      stepFolding();
+    }
+    if(currentVisibleStep.length == 0 && action == -1) {
+      currentStep = lastKnownMaxStep;
+      stepFolding();
+    }
+
+    if(currentStep != 99)
+      lastKnownMaxStep = currentStep;
+
+    if(currentStep == 1)
+      $('#backbutton').hide();
+    else
+      $('#backbutton').show();
+  }
+
+  function stepFolding() {
     //console.log("Setting up for step=" + currentStep);
-    // the 99 is only a safeguard
-    for(i = 1; i< 99; i++) {
+    // the 100 is only a safeguard
+    for(i = 1; i < 100; i++) {
       var s = $("div.step[data-step="+i+"]");
       if(s.length == 0)
-        break;
+        continue;
 
       var f = $("div.folded[data-step="+i+"]");
       if(i == currentStep) { // show
@@ -197,11 +233,6 @@ name[:sonstiges] = "Sonstiges"
         stepShowFolded(s, f);
       }
     }
-
-    if(currentStep == 1)
-      $('#backbutton').hide();
-    else
-      $('#backbutton').show();
   }
 
   function stepShowNone(s, f) {
@@ -223,7 +254,6 @@ name[:sonstiges] = "Sonstiges"
   // conditions are true. If they are, the action will be executed
   // on obj.
   function checkAndAnimate(obj, action) {
-
     // loop over objects given. If there's a 2a and 2b step there
     // actually may be multiple elements.
     obj.each(function(i, obj) {
@@ -252,6 +282,8 @@ name[:sonstiges] = "Sonstiges"
             break;
           case "show":
             if(!obj.is(":visible")) obj.slideDown("slow");
+            if(obj.filter(".step").length > 0)
+              currentVisibleStep += obj;
             break;
         }
       }
@@ -259,15 +291,13 @@ name[:sonstiges] = "Sonstiges"
   }
 
   $("#backbutton").click(function(obj) {
-    currentStep -= 1;
-    stepMagic();
+    stepMagic(-1);
   });
 
-  $("a.nextstep").click(function(obj) {
-    if($("form.new_motion").valid()) {
-      currentStep += 1;
-      stepMagic();
-    }
+  $(".nextstep").click(function(obj) {
+    //if($("form.new_motion").valid()) {
+      stepMagic(+1);
+    //}
   });
 
   $('div.step a.motion-selector').click(function(obj) {
@@ -277,13 +307,24 @@ name[:sonstiges] = "Sonstiges"
     var folded = $("div.folded[data-step="+step+"]")
     // update chosen text
     folded.children("span").text(content);
-    currentStep = step*1 + 1;
-    stepMagic();
+    stepMagic(+1);
   });
 
   $(document).ready(function(){
     stepMagic();
+
+    // setup form validation
     $("form.new_motiontion").validate();
+
+    // prevent <enter> from submitting the form without validation
+    $('input,select').keydown(function(event){
+      if(event.keyCode == 13) {
+        event.preventDefault();
+        return false;
+      }
+    });
+
+
   });
 </script>
 
