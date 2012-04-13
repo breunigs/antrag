@@ -32,6 +32,11 @@ Antrag::Application.configure do
   # Do not compress assets
   config.assets.compress = false
 
-  # Expands the lines which load the assets
-  config.assets.debug = true
+  # Expands the lines which load the assets.
+  # Do not set to true or Rails will include everything twice, thus
+  # breaking JQuery.
+  config.assets.debug = false
+
+  config.serve_static_assets = false
+
 end
