@@ -16,7 +16,7 @@ function setupKingslandingPage() {
   });
 
   // bind large, fancy action buttons
-  $('div.step a.motion-selector').click(function(obj) {
+  $('div.step a.motion-selector').click(function() {
     var content = $(this).contents("b").text();
     var stepDiv = $(this).parents("div.step");
     var step = stepDiv.attr("data-step");
@@ -24,6 +24,10 @@ function setupKingslandingPage() {
     // update chosen text
     folded.children("span").text(content);
     stepMagic(+1);
+    // update kind-input
+    var x = $("#motion_kind").val().split("/");
+    x[step*1-1] = content;
+    $("#motion_kind").val(x.splice(0, step).join("/"));
   });
 
   // setup form validation
@@ -42,14 +46,14 @@ function setupKingslandingPage() {
 
 // unhides more person fields as needed
 function autoShowReisekostenPersonenInit() {
-  $("[id^=dynamic_gr5_Name_]").change(function() {
+  $("[id^=dynamic_Finanzantrag_Reisekostenantrag_Name_]").change(function() {
     autoShowReisekostenPersonen();
   });
 }
 
 function autoShowReisekostenPersonen() {
   var show = true;
-  var elm = $("[id^=dynamic_gr5_Name_]");
+  var elm = $("[id^=dynamic_Finanzantrag_Reisekostenantrag_Name_]");
 
   // don't do anything if the group is not visible
   if(!elm.first().parent().parent().is(':visible'))

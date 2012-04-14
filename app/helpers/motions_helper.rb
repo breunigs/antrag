@@ -8,7 +8,7 @@ module MotionsHelper
       s << %(<div class="step" data-step="#{count}" data-check="#{check}">)
       s << %(<h3>#{count}. #{group[:group]}</h3>)
       group[:fields].each do |field|
-        id, name_clean, name, gr = get_identifiers_for_field(field, group)
+        id, name_clean, name, gr = get_identifiers_for_field(field, data)
         s << %(<div class="field">)
         s << %(<label for="#{name}">#{field[:name]}</label>)
         css = field[:optional] ? "" : "required"
@@ -18,10 +18,10 @@ module MotionsHelper
           when :float   then s << number_field_tag(name, v ? v: "0.0", :class => css)
           when :text    then s << text_area_tag(   name, v ? v: "",    :placeholder => field[:placeholder], :class => css)
           when :string  then s << text_field_tag(  name, v ? v: "",    :placeholder => field[:placeholder], :class => css)
-          when :date    then s << date_select(name, "", :default => get_date_from_params(field, group), :class => css)
+          when :date    then s << date_select(name, "", :default => get_date_from_params(field, data), :class => css)
           when :select  then
             s << select(name, "", get_select_values(field), :class => css)
-            s << get_js_for_dynamic_select_info(field, group)
+            s << get_js_for_dynamic_select_info(field, data)
           else raise "Field type is unimplemented: #{field[:type]}"
         end
         s << "<p>#{field[:info]}</p>" if field[:info]
@@ -46,13 +46,13 @@ module MotionsHelper
 
   # first is the JS identifier, second the name without the dynamic[]
   # boilerplate and the last one is how the field’s name attribute should
-  # be. Forth is the group identifier used in the name field.
-  def get_identifiers_for_field(field, group)
-    g = group[:ident].gsub("&shy;", "").gsub(/[^a-z0-9]/i, "_")
-    a = (field[:name_append] || "").gsub(/[^a-z0-9]/i, "_")
-    name_clean = field[:name].gsub("&shy;", "").gsub(/[^a-z0-9]/i, "_")
-    name = "dynamic[#{g}][#{name_clean}]#{field[:name_append]}"
-    id = name.gsub(/[^a-z0-9]+/i, "_")
+  # be. Forth is the kind identifier used in the name field.
+  def get_identifiers_for_field(field, constant)
+    g = constant[:ident].field_cleanup
+    name_clean = field[:name].gsub("&shy;", "").field_cleanup
+    name = "dynamic[#{g}][#{name_clean}]"
+    name << "[#{field[:index]}]" if field[:index]
+    id = name.field_cleanup
     return id, name_clean, name, g
   end
 
@@ -62,8 +62,8 @@ module MotionsHelper
     end
   end
 
-  def get_js_for_dynamic_select_info(field, group)
-    id, name_clean, name = get_identifiers_for_field(field, group)
+  def get_js_for_dynamic_select_info(field, constant)
+    id, name_clean, name = get_identifiers_for_field(field, constant)
     data = field[:values].map do |f|
       f.is_a?(String) || f[:info].blank? \
         ? nil \
@@ -84,12 +84,12 @@ module MotionsHelper
     </script>)
   end
 
-  def get_date_from_params(field, group)
-    id, name_clean, name, group = get_identifiers_for_field(field, group)
+  def get_date_from_params(field, constant)
+    id, name_clean, name, const_id = get_identifiers_for_field(field, constant)
     x = begin
-      d_y = params[:dynamic][group][name_clean + "(1i)"].to_i
-      d_m = params[:dynamic][group][name_clean + "(2i)"].to_i
-      d_d = params[:dynamic][group][name_clean + "(3i)"].to_i
+      d_y = params[:dynamic][const_id][name_clean]["(1i)"].to_i
+      d_m = params[:dynamic][const_id][name_clean]["(2i)"].to_i
+      d_d = params[:dynamic][const_id][name_clean]["(3i)"].to_i
       Date.new(d_y, d_m, d_d)
     rescue
       Date.today
@@ -103,7 +103,7 @@ module MotionsHelper
     raise "No autocompleter available for #{klass}" if t.nil? && !klass.nil?
     return "" unless t
     t.map! { |x| '"' + escape_javascript(x) + '"' }
-    name = name.gsub(/[\[\]]/, "_").gsub(/_$/, "")
+    name = name.field_cleanup.gsub(/_$/, "")
     "<script>
       $(document).ready(function () {
         //console.log($(\"##{name}\"));
@@ -117,4 +117,5 @@ module MotionsHelper
   def next_button
     '<button class="button nextstep primary">Nächster Schritt</button>'
   end
+
 end

@@ -11,25 +11,25 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120412070551) do
+ActiveRecord::Schema.define(:version => 20120414161958) do
 
   create_table "attachments", :force => true do |t|
     t.string   "file_file_name"
     t.string   "file_content_type"
     t.integer  "file_file_size"
     t.datetime "file_updated_at"
-    t.binary   "motion_id",         :limit => 255
-    t.datetime "created_at",                       :null => false
-    t.datetime "updated_at",                       :null => false
+    t.string   "motion_id"
+    t.datetime "created_at",        :null => false
+    t.datetime "updated_at",        :null => false
     t.string   "ip"
   end
 
   create_table "comments", :force => true do |t|
     t.integer  "user_id"
-    t.binary   "motion_id",  :limit => 255
+    t.string   "motion_id"
     t.text     "comment"
-    t.datetime "created_at",                :null => false
-    t.datetime "updated_at",                :null => false
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
     t.string   "ip"
   end
 
@@ -64,7 +64,9 @@ ActiveRecord::Schema.define(:version => 20120412070551) do
     t.boolean  "fin_granted"
     t.datetime "created_at",          :null => false
     t.datetime "updated_at",          :null => false
-    t.binary   "uuid"
+    t.string   "uuid"
+    t.integer  "referat_id"
+    t.text     "dynamic_fields"
   end
 
   create_table "referate", :force => true do |t|

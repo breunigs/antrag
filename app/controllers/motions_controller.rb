@@ -128,6 +128,51 @@ class MotionsController < ApplicationController
   # POST /motions.json
   def create
     @motion = Motion.new(params[:motion])
+
+    # convert date fields into real Date objects. If it fails due to
+    # bogus data, the dynamic field validator will catch that it isn't
+    # a valid date object.
+    params[:dynamic].each do |kind, fields|
+      fields.each do |name, value|
+        if value.is_a?(Hash) && value.keys.include?("(3i)")
+          begin
+            d_y = value["(1i)"].to_i
+            d_m = value["(2i)"].to_i
+            d_d = value["(3i)"].to_i
+            params[:dynamic][kind][name] = Date.new(d_y, d_m, d_d)
+          rescue; end
+        end
+      end
+    end
+
+    # don't allow arrays as values. Convert them to strings (occurs in
+    # select fields for some reason).
+    params[:dynamic].each do |kind, fields|
+      fields.each do |name, value|
+        if value.is_a?(Array)
+          params[:dynamic][kind][name] = params[:dynamic][kind][name].first
+        end
+        if value.is_a?(Hash) # entries with :index => blub
+          value.each do |k,v|
+            params[:dynamic][kind][name][k] = v.first
+          end
+        end
+      end
+    end
+
+
+    @motion.dynamic_fields = Base64.encode64(Marshal.dump(params[:dynamic]))
+
+    # collect all fields that make up the fin_exp_amount
+    @motion.fin_expected_amount = 0
+    d = @motion.dynamic
+    @motion.get_form_fields.each do |f|
+      val = d[f[:name].field_cleanup]
+      if f[:is_fin_expected_amount] && val.to_f.to_s == val
+        @motion.fin_expected_amount += val.to_f
+      end
+    end
+
     uuid = UUIDTools::UUID.timestamp_create.to_s
     while Motion.find_by_uuid(uuid) != nil
       uuid = UUIDTools::UUID.timestamp_create.to_s

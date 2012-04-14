@@ -1,10 +1,11 @@
 <%
 name = {}
+# change in config/initializers/constants.rb as well
 name[:finanz] = "Finanzantrag"
 name[:inhalt] = "Inhaltlicher Antrag"
 name[:reisekosten] = "Reisekostenantrag"
 name[:orientierung] = "Orientierungsveranstaltung"
-name[:vortrag] = "Vortrag/Honorar"
+name[:vortrag] = "Vortrag (Honorar)"
 name[:material] = "Beschaffungsantrag"
 name[:sonstiges] = "Sonstiges"
 %>
@@ -42,6 +43,8 @@ name[:sonstiges] = "Sonstiges"
         </ul>
       </div>
     <% end %>
+
+    <input type="hidden" name="motion[kind]" id="motion_kind"/>
 
     <%##################################################################%>
     <div class="step" data-step="1" style="display:block">
@@ -183,8 +186,8 @@ name[:sonstiges] = "Sonstiges"
         <%= f.text_field :contact_fon %>
       </div>
       <div class="field">
-        <%= f.label :referat %>
-        <%= f.select(:referat, Referat.all.map {|p| [ p.name, p.id ] }, {:include_blank => 'Keinem'}) %>
+        <%= f.label :referat_id %>
+        <%= f.select(:referat_id, Referat.all.map {|p| [ p.name, p.id ] }, {:include_blank => 'Keinem'}) %>
         <p>Welchem Referat ist Dein Antrag am ehesten zuzuordnen?</p>
       </div>
 
