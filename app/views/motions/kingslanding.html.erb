@@ -182,6 +182,12 @@ name[:sonstiges] = "Sonstiges"
         <%= f.label :contact_fon %>
         <%= f.text_field :contact_fon %>
       </div>
+      <div class="field">
+        <%= f.label :referat %>
+        <%= f.select(:referat, Referat.all.map {|p| [ p.name, p.id ] }, {:include_blank => 'Keinem'}) %>
+        <p>Welchem Referat ist Dein Antrag am ehesten zuzuordnen?</p>
+      </div>
+
 
       <p>Nach diesem Schritt wird Dein Antrag gespeichert. Auf der nächsten Seite kannst Du noch Dateien hinzufügen oder ergänzende Kommentare abgeben. Eine Korrektur ist danach aber nicht mehr möglich.</p>
       <%= f.submit :class => "button primary", :disable_with => "Bitte warten" %>

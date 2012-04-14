@@ -24,6 +24,8 @@ class Motion < ActiveRecord::Base
   has_many :comments, :order => 'created_at ASC'
   has_many :attachments, :order => 'file_updated_at ASC'
 
+  belongs_to :referat
+
   def is_public?
     !publication.blank?
   end
