@@ -4,7 +4,7 @@ name[:finanz] = "Finanzantrag"
 name[:inhalt] = "Inhaltlicher Antrag"
 name[:reisekosten] = "Reisekostenantrag"
 name[:orientierung] = "Orientierungsveranstaltung"
-name[:honorar] = "Vortrag/Honorar"
+name[:vortrag] = "Vortrag/Honorar"
 name[:material] = "Beschaffungsantrag"
 name[:sonstiges] = "Sonstiges"
 %>
@@ -14,6 +14,16 @@ name[:sonstiges] = "Sonstiges"
     Du hast <b>JavaScript</b> in Deinem Browser <b>deaktiviert</b>. Dies ist aber notwendig um neue Anträge erstellen zu können, da es ohne sehr aufwendig für Dich wäre. Da in jedem normalen Browser JavaScript standardmäßig eingeschaltet ist, nehme ich an Du weißt an welchen Schrauben Du drehen musst.
   </div>
 </noscript>
+
+<script>
+  // init
+  var currentStep = 1;
+  var currentVisibleStep = [];
+  var lastKnownMaxStep = 0;
+  $(document).ready(function(){
+    setupKingslandingPage();
+  });
+</script>
 
 <div class="container">
   <h1>Anträge stellen</h1>
@@ -35,7 +45,7 @@ name[:sonstiges] = "Sonstiges"
 
     <%##################################################################%>
     <div class="step" data-step="1" style="display:block">
-      <h3>Enthält Dein Antrag eine finanzielle Komponente?</h3>
+      <h3>1. Enthält Dein Antrag eine finanzielle Komponente?</h3>
       <div class="motion-selector-box">
         <a class="button motion-selector">
           <span>€</span>
@@ -65,12 +75,13 @@ name[:sonstiges] = "Sonstiges"
     </div>
 
     <div class="folded" data-step="1">
-      Antragstyp: <span></span>
+      1. Antragstyp: <span></span>
     </div>
 
     <%##################################################################%>
 
     <div class="step" data-step="2" data-check="1=<%=name[:finanz]%>">
+      <h3>2. In welchem Rahmen brauchst Du Geld?</h3>
       <div class="motion-selector-box">
         <a class="button motion-selector">
           <span>1</span>
@@ -94,7 +105,7 @@ name[:sonstiges] = "Sonstiges"
       <div class="motion-selector-box">
         <a class="button motion-selector">
           <span>∿</span>
-          <b><%=name[:honorar]%></b>
+          <b><%=name[:vortrag]%></b>
         </a>
         <ul>
           <li>ihr möchtet einen Vortragenden einladen</li>
@@ -129,17 +140,21 @@ name[:sonstiges] = "Sonstiges"
     </div>
 
     <div class="folded" data-step="2" data-check="1=<%=name[:finanz]%>">
-      Kategorie: <span></span>
+      2. Kategorie: <span></span>
     </div>
 
     <div class="folded" data-step="2" data-check="1=<%=name[:inhalt]%>">
-      INHALT <span></span>
+      2. INHALT <span></span>
     </div>
 
 
     <%##################################################################%>
 
     <%= render_motion_form(f, MOTION_ORIENTIERUNG, 3, "1=#{name[:finanz]}&2=#{name[:orientierung]}") %>
+    <%= render_motion_form(f, MOTION_VORTRAG, 3, "1=#{name[:finanz]}&2=#{name[:vortrag]}") %>
+    <%= render_motion_form(f, MOTION_REISEKOSTEN, 3, "1=#{name[:finanz]}&2=#{name[:reisekosten]}") %>
+
+    <%##################################################################%>
 
     <div class="step" data-step="99">
       <h3>Begründung und Kontaktdaten</h3>
@@ -177,156 +192,6 @@ name[:sonstiges] = "Sonstiges"
 
   <% end %>
 </div>
-
-<script>
-  var currentStep = 1;
-  var currentVisibleStep = [];
-  var lastKnownMaxStep = 0;
-  // automatically shows/hides buttons and step-divs based on currentStep
-  function stepMagic(action) {
-    if(action == +1) {
-      if(!$("form.new_motion").valid()) {
-        return;
-      }
-      currentStep++;
-    } else if(action == -1)
-      currentStep--;
-
-    // try stepping first
-    currentVisibleStep = [];
-    stepFolding();
-    // if there’s no main box visible, try to fill the gaps. For +1 we
-    // know the next box will be the last one. For going back, use the
-    // last one that worked
-    if(currentVisibleStep.length == 0 && action == +1) {
-      currentStep = 99;
-      stepFolding();
-    }
-    if(currentVisibleStep.length == 0 && action == -1) {
-      currentStep = lastKnownMaxStep;
-      stepFolding();
-    }
-
-    if(currentStep != 99)
-      lastKnownMaxStep = currentStep;
-
-    if(currentStep == 1)
-      $('#backbutton').hide();
-    else
-      $('#backbutton').show();
-  }
-
-  function stepFolding() {
-    //console.log("Setting up for step=" + currentStep);
-    // the 100 is only a safeguard
-    for(i = 1; i < 100; i++) {
-      var s = $("div.step[data-step="+i+"]");
-      if(s.length == 0)
-        continue;
-
-      var f = $("div.folded[data-step="+i+"]");
-      if(i == currentStep) { // show
-         stepShowStep(s, f);
-      } else if(i > currentStep) { // hide both
-        stepShowNone(s, f);
-      } else { // prior to current ones, show only folded
-        stepShowFolded(s, f);
-      }
-    }
-  }
-
-  function stepShowNone(s, f) {
-    checkAndAnimate(s, "hide");
-    checkAndAnimate(f, "hide");
-  }
-
-  function stepShowStep(s, f) {
-    checkAndAnimate(s, "show");
-    checkAndAnimate(f, "hide");
-  }
-
-  function stepShowFolded(s, f) {
-    checkAndAnimate(s, "hide");
-    checkAndAnimate(f, "show");
-  }
-
-  // Looks if obj has a data-check attribute and sees if these
-  // conditions are true. If they are, the action will be executed
-  // on obj.
-  function checkAndAnimate(obj, action) {
-    // loop over objects given. If there's a 2a and 2b step there
-    // actually may be multiple elements.
-    obj.each(function(i, obj) {
-      works = true;
-      // enable jquery magic
-      obj = $(obj);
-      // check
-      if(obj.attr("data-check")) {
-        //console.log(obj.attr("data-check"));
-        $(obj.attr("data-check").split("&")).each(function(i, c) {
-          if(!works)
-            return;
-          var cc = c.split("=");
-          var state = $($("div.folded[data-step="+cc[0]+"] span")[0]).text();
-          //console.log("   " + c + "  == " + state);
-          if(state != cc[1])
-            works = false;
-        });
-      }
-      // execute
-      if(works) {
-        //console.log("Executing " + action + " on " + obj);
-        switch(action) {
-          case "hide":
-            if( obj.is(":visible")) obj.slideUp("slow");
-            break;
-          case "show":
-            if(!obj.is(":visible")) obj.slideDown("slow");
-            if(obj.filter(".step").length > 0)
-              currentVisibleStep += obj;
-            break;
-        }
-      }
-    });
-  }
-
-  $("#backbutton").click(function(obj) {
-    stepMagic(-1);
-  });
-
-  $(".nextstep").click(function(obj) {
-    //if($("form.new_motion").valid()) {
-      stepMagic(+1);
-    //}
-  });
-
-  $('div.step a.motion-selector').click(function(obj) {
-    var content = $(this).contents("b").text();
-    var stepDiv = $(this).parents("div.step");
-    var step = stepDiv.attr("data-step");
-    var folded = $("div.folded[data-step="+step+"]")
-    // update chosen text
-    folded.children("span").text(content);
-    stepMagic(+1);
-  });
-
-  $(document).ready(function(){
-    stepMagic();
-
-    // setup form validation
-    $("form.new_motiontion").validate();
-
-    // prevent <enter> from submitting the form without validation
-    $('input,select').keydown(function(event){
-      if(event.keyCode == 13) {
-        event.preventDefault();
-        return false;
-      }
-    });
-
-
-  });
-</script>
 
 <div class="container">
   <h2>Andere Aufgaben</h2>
