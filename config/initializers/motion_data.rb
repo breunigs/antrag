@@ -32,14 +32,14 @@ MOTION_REISEKOSTEN = {
       { :name => "Kosten Bahnfahrt", :type => :currency, :info => "Kosten der Hin- und Rückfahrt mit der Bahn pro Person, zweite Klasse, ohne Bahncard. Das ist der Preis <a href=\"http://www.bahn.de\">den bahn.de anzeigt</a>, wenn man keine besonderen Eingaben macht. Diese Angabe ist <i>immer</i> erforderlich." },
       { :name => "Verkehrsmittel", :type => :select, :values => [
           { :name => "Bahn", :info => "in der Regel nur bis zu 3 Personen" },
-          { :name => "Auto", :info => "bitte zusätzliche Felder zur Anreise mit dem Auto beachten" },
-          { :name => "Sonstiges", :info => "Kosten und Details bitte im Begründungstext auf der letzten Seite angeben."}
+          { :name => "Auto", :info => "bitte zusätzliche Felder zur Anreise mit dem Auto beachten", :depend => ["Fahrtweg in km", "Automiete", "Treibstoffkosten"] },
+          { :name => "Sonstiges", :info => "Kosten und Details bitte im Begründungstext auf der letzten Seite angeben.", :depend => ["Kosten insgesamt"] }
         ]
       },
       { :name => "Fahrtweg in km", :type => :integer, :optional => true, :info => "Nur bei Anreise mit dem Auto. Für Hin- und Rückfahrt. <a href=\"http://map.project-osrm.org/\">Ein Routenplaner hilft</a>." },
       { :name => "Automiete", :type => :currency, :optional => true, :info => "Nur bei Anreise mit dem Auto. Falls ein Auto gemietet werden muss, hier die Gesamtkosten für die Miete (inkl. Kilometerpauschale, ohne Treibstoff)." },
-      { :name => "Treibstoffkosten", :type => :currency, :optional => true, :info => "Nur bei Anreise mit dem Auto. Geschätzte Treibstoffkosten für Hin- und Rückfahrt." }
-      #{ :name => "Kosten insgesamt", :type => :currency, :info => "" }
+      { :name => "Treibstoffkosten", :type => :currency, :optional => true, :info => "Nur bei Anreise mit dem Auto. Geschätzte Treibstoffkosten für Hin- und Rückfahrt." },
+      { :name => "Kosten insgesamt", :type => :currency, :info => "Nur bei sonstigen Verkehrsmitteln.", :optional => true }
     ]},
     { :group => "Anreisende Personen", :fields => [
       { :name => "Name",      :index => "0", :type => :string, :info => "Vollständiger Name, so wie er auf dem Personalausweis zu finden ist." },
@@ -84,7 +84,7 @@ ALL_MOTIONS = [MOTION_VORTRAG, MOTION_REISEKOSTEN, MOTION_ORIENTIERUNG]
 # be. Forth is the kind identifier used in the name field.
 def get_identifiers_for_field(field, constant)
   g = constant[:ident].field_cleanup
-  name_clean = field[:name].gsub("&shy;", "").field_cleanup
+  name_clean = field[:name].field_cleanup
   name = "dynamic[#{g}][#{name_clean}]"
   name << "[#{field[:index]}]" if field[:index]
   id = name.field_cleanup

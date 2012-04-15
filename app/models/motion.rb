@@ -116,7 +116,7 @@ class Motion < ActiveRecord::Base
           when "Auto"
             exp = d["Automiete".field_cleanup].to_f_magic + ["Treibstoffkosten".field_cleanup].to_f_magic
           when "Sonstiges"
-            #FIXME
+            exp = d["Kosten insgesamt".field_cleanup].to_f_magic
           else raise("Invalid Verkehrsmittel selection.")
         end
       when "Finanzantrag/Vortrag (Honorar)"

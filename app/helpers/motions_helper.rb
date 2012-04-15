@@ -14,13 +14,13 @@ module MotionsHelper
         css = field[:optional] ? "" : "required"
         v = params[:dynamic][gr][name_clean] if params && params[:dynamic] && params[:dynamic][gr]
         case field[:type]
-          when :integer then s << number_field_tag(name, v ? v: "0",   :class => css)
-          when :float   then s << number_field_tag(name, v ? v: "0,0", :class => css)
+          when :integer  then s << number_field_tag(name, v ? v: "0",   :class => css)
+          when :float    then s << number_field_tag(name, v ? v: "0,0", :class => css)
           when :currency then s << number_field_tag(name, v ? v: "0,00", :class => css)
-          when :text    then s << text_area_tag(   name, v ? v: "",    :placeholder => field[:placeholder], :class => css)
-          when :string  then s << text_field_tag(  name, v ? v: "",    :placeholder => field[:placeholder], :class => css)
-          when :date    then s << date_select(name, "", :default => get_date_from_params(field, data), :class => css)
-          when :select  then
+          when :text     then s << text_area_tag(   name, v ? v: "",    :placeholder => field[:placeholder], :class => css)
+          when :string   then s << text_field_tag(  name, v ? v: "",    :placeholder => field[:placeholder], :class => css)
+          when :date     then s << date_select(name, "", :default => get_date_from_params(field, data), :class => css)
+          when :select   then
             s << select(name, "", get_select_values(field), :class => css)
             s << get_js_for_dynamic_select_info(field, data)
           else raise "Field type is unimplemented: #{field[:type]}"
@@ -62,14 +62,35 @@ module MotionsHelper
         : %("#{escape_javascript(f[:name])}": "#{escape_javascript(f[:info])}")
     end.compact
     return "" if data.empty?
+    depend = field[:values].map do |f|
+      f[:depend].nil? \
+        ? nil \
+        : %("#{escape_javascript(f[:name])}": [) + f[:depend].map do |ff|
+            fid = get_identifiers_for_field({ :name => ff }, constant)
+            %("#{escape_javascript fid.first.gsub(/_$/, "")}")
+          end.join(", ")+"]"
+    end.flatten.compact
     %(<label id="#{id}_info_box" class="notice"></p>
     <script>
       $(document).ready(function(){
         $("##{id}").change(function () {
-          var data = {#{data.join(", ")}}
+          var data = {#{data.join(", ")}};
+          var depend = {#{depend.join(", ")}};
           var nfo = $("##{id}_info_box");
           $("##{id} option:selected").each(function () {
-            nfo.text(data[$(this).text()]);
+            var t = $(this).text();
+            nfo.text(data[t]);
+            $.each(depend, function (key, value) {
+              $(value).each(function (index, id) {
+                var elm = $("#"+id).parent();
+                var hid = $("#"+id).parent().parent().is(":hidden"); // i.e. the group
+                if(key == t) {
+                  if(hid) elm.show(); else elm.slideDown();
+                } else {
+                  if(hid) elm.hide(); else elm.slideUp();
+                }
+              });
+            });
           });
         }).trigger('change');
       });
