@@ -12,9 +12,9 @@ MOTION_ORIENTIERUNG = {
     },
     { :group => "Kosten", :fields => [
       { :name => "Kosten&shy;zusam&shy;men&shy;setzung", :type => :text, :placeholder => "z.B. 123€ für Kuchen, 456€ für Kaffeepulver, 78€ für Lutscher…" },
-      { :name => "Gesamtkosten", :type => :float },
-      { :name => "Eigenbeteiligung", :type => :float },
-      { :name => "beantragter Zuschuss", :type => :float, :is_fin_expected_amount => true }]
+      { :name => "Gesamtkosten", :type => :currency },
+      { :name => "Eigenbeteiligung", :type => :currency },
+      { :name => "beantragter Zuschuss", :type => :currency }]
     }
   ]
 }
@@ -29,7 +29,7 @@ MOTION_REISEKOSTEN = {
       { :name => "Rückfahrt am", :type => :date },
     ]},
     { :group => "Kosten", :fields => [
-      { :name => "Kosten Bahnfahrt", :type => :float, :info => "Kosten der Hin- und Rückfahrt mit der Bahn pro Person, zweite Klasse, ohne Bahncard. Das ist der Preis <a href=\"http://www.bahn.de\">den bahn.de anzeigt</a>, wenn man keine besonderen Eingaben macht. Diese Angabe ist <i>immer</i> erforderlich." },
+      { :name => "Kosten Bahnfahrt", :type => :currency, :info => "Kosten der Hin- und Rückfahrt mit der Bahn pro Person, zweite Klasse, ohne Bahncard. Das ist der Preis <a href=\"http://www.bahn.de\">den bahn.de anzeigt</a>, wenn man keine besonderen Eingaben macht. Diese Angabe ist <i>immer</i> erforderlich." },
       { :name => "Verkehrsmittel", :type => :select, :values => [
           { :name => "Bahn", :info => "in der Regel nur bis zu 3 Personen" },
           { :name => "Auto", :info => "bitte zusätzliche Felder zur Anreise mit dem Auto beachten" },
@@ -37,9 +37,9 @@ MOTION_REISEKOSTEN = {
         ]
       },
       { :name => "Fahrtweg in km", :type => :integer, :optional => true, :info => "Nur bei Anreise mit dem Auto. Für Hin- und Rückfahrt. <a href=\"http://map.project-osrm.org/\">Ein Routenplaner hilft</a>." },
-      { :name => "Automiete", :type => :float, :optional => true, :info => "Nur bei Anreise mit dem Auto. Falls ein Auto gemietet werden muss, hier die Gesamtkosten für die Miete (inkl. Kilometerpauschale, ohne Treibstoff)." },
-      { :name => "Treibstoffkosten", :type => :float, :optional => true, :info => "Nur bei Anreise mit dem Auto. Geschätzte Treibstoffkosten für Hin- und Rückfahrt." }
-      #{ :name => "Kosten insgesamt", :type => :float, :info => "" }
+      { :name => "Automiete", :type => :currency, :optional => true, :info => "Nur bei Anreise mit dem Auto. Falls ein Auto gemietet werden muss, hier die Gesamtkosten für die Miete (inkl. Kilometerpauschale, ohne Treibstoff)." },
+      { :name => "Treibstoffkosten", :type => :currency, :optional => true, :info => "Nur bei Anreise mit dem Auto. Geschätzte Treibstoffkosten für Hin- und Rückfahrt." }
+      #{ :name => "Kosten insgesamt", :type => :currency, :info => "" }
     ]},
     { :group => "Anreisende Personen", :fields => [
       { :name => "Name",      :index => "0", :type => :string, :info => "Vollständiger Name, so wie er auf dem Personalausweis zu finden ist." },
@@ -70,8 +70,8 @@ MOTION_VORTRAG = {
       { :name => "Privatanschrift Vortragender", :type => :text },
       { :name => "Abreiseort", :type => :string, :placeholder => "z.B. Heimatstadt des/der Vortragenden" },
       { :name => "Verkehrsmittel", :type => :string, :placeholder => "z.B. Auto, Bahn…" },
-      { :name => "Fahrtkosten", :type => :float, :is_fin_expected_amount => true },
-      { :name => "Honorarhöhe", :type => :float, :is_fin_expected_amount => true },
+      { :name => "Fahrtkosten", :type => :currency },
+      { :name => "Honorarhöhe", :type => :currency },
       { :name => "Bankverbindung", :type => :string, :placeholder => "Inhaber, Kto-Nr., BLZ (oder IBAN und BIC)" }]
     }
   ]

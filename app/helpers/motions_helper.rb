@@ -15,7 +15,8 @@ module MotionsHelper
         v = params[:dynamic][gr][name_clean] if params && params[:dynamic] && params[:dynamic][gr]
         case field[:type]
           when :integer then s << number_field_tag(name, v ? v: "0",   :class => css)
-          when :float   then s << number_field_tag(name, v ? v: "0.0", :class => css)
+          when :float   then s << number_field_tag(name, v ? v: "0,0", :class => css)
+          when :currency then s << number_field_tag(name, v ? v: "0,00", :class => css)
           when :text    then s << text_area_tag(   name, v ? v: "",    :placeholder => field[:placeholder], :class => css)
           when :string  then s << text_field_tag(  name, v ? v: "",    :placeholder => field[:placeholder], :class => css)
           when :date    then s << date_select(name, "", :default => get_date_from_params(field, data), :class => css)

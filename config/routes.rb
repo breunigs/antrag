@@ -15,6 +15,10 @@ Antrag::Application.routes.draw do
   # referat
   get "/motions/:id/change_referat" => "motions#change_referat", :as => :motion_change_referat
 
+  get "/motions/:id/grant" => "motions#grant", :as => :motion_grant
+  get "/motions/:id/deny" => "motions#deny", :as => :motion_deny
+  get "/motions/:id/set_status/:status" => "motions#set_status", :as => :motion_set_status
+
   # toggles
   get "/motions/:id/toggle_motion_fin_granted" => "motions#toggle_motion_fin_granted", :as => :toggle_motion_fin_granted
   get "/motions/:id/toggle_motion_fin_deducted" => "motions#toggle_motion_fin_deducted", :as => :toggle_motion_fin_deducted
@@ -24,12 +28,16 @@ Antrag::Application.routes.draw do
   resources :users
   resources :fachschaften
   match "/vote/:fachschaft_id/:motion_id" => "votes#new"
+  match "/impressum" => "static#impressum"
 
   # session handlung
   match "/login" => "sessions#login"
   match "/auth/:provider/callback" => "sessions#create"
   match "/auth/failure" => "sessions#failure"
   match "/logout" => "sessions#destroy", :as => :logout
+
+
+  match '/*path' => 'static#fourofour'
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

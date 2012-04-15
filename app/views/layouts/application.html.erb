@@ -22,9 +22,11 @@
 </div>
 
 <menu id="menu">
+  <li><%=link_to "Neuer Antrag", "/" %></li>
 <% for m in [Motion, Referat, Fachschaft, User] do %>
   <li><%=link_to m.model_name.human.pluralize, m %></li>
 <% end %>
+  <li><%=link_to "Impressum", "/impressum" %></li>
 </menu>
 
   <div id="content">

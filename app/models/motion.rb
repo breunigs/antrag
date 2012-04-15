@@ -17,8 +17,6 @@ class Motion < ActiveRecord::Base
   # validate the mail address is valid
   validates_format_of :contact_mail, :with => MAIL_REGEX
 
-  validates_format_of :top, :with => /^fsk|refkonf$/i, :allow_blank => true
-
   # limit kinds of motions.
   validates_format_of :kind, :with => /^[\sa-z\/]+$/i
   validate :kind_exists
@@ -34,6 +32,18 @@ class Motion < ActiveRecord::Base
 
   # Constants for status handling
   STATUS_NEW = "neu"
+  STATUS_DENIED = "abgelehnt"
+  STATUS_GRANTED = "bewilligt"
+  STATUS_FORMS_ARRIVED = "Formulare in der FSK eingegangen"
+  STATUS_ZUV_GRANTED = "durch die ZUV genehmigt"
+  STATUS_ZUV_DENIED = "durch die ZUV abgelehnt"
+  STATUS_BILLS_ARRIVED = "Abrechnungen eingegangen"
+  STATUS_DEDUCTED = "Gebucht"
+  STATUS_COMPLETED = "Abgeschlossen"
+  TOP_NONE = "nirgens"
+  TOP_FSK = "FSK"
+  TOP_REFKONF = "RefKonf"
+  TOP_BOTH = "FSK oder RefKonf"
 
 
   def is_public?
@@ -42,6 +52,25 @@ class Motion < ActiveRecord::Base
 
   def finanz?
     kind =~ /^Finanzantrag\//
+  end
+
+  def referat_may_accept?
+    finanz? && fin_expected_amount <= MAX_REFERAT_FINANZ_BUDGET
+  end
+
+  def is_finished?
+    [STATUS_DENIED, STATUS_COMPLETED, STATUS_ZUV_DENIED].include?(status)
+  end
+
+  # derives the top state from the referat status and amount of money
+  # requested.
+  def get_top_state
+    return Motion::TOP_NONE if status != STATUS_NEW
+    if referat_may_accept?
+      referat.nil? ? Motion::TOP_BOTH : Motion::TOP_NONE
+    else
+      Motion::TOP_FSK
+    end
   end
 
   # Returns the name/mail of the submitter in mail header friendly
@@ -79,19 +108,19 @@ class Motion < ActiveRecord::Base
     d = dynamic
     case kind
       when "Finanzantrag/Orientierungsveranstaltung"
-        exp = d["beantragter Zuschuss".field_cleanup].to_f
+        exp = d["beantragter Zuschuss".field_cleanup].to_f_magic
       when "Finanzantrag/Reisekostenantrag"
         case d["Verkehrsmittel".field_cleanup]
           when "Bahn"
-            exp = d["Kosten Bahnfahrt".field_cleanup].to_f
+            exp = d["Kosten Bahnfahrt".field_cleanup].to_f_magic
           when "Auto"
-            exp = d["Automiete".field_cleanup].to_f + ["Treibstoffkosten".field_cleanup].to_f
+            exp = d["Automiete".field_cleanup].to_f_magic + ["Treibstoffkosten".field_cleanup].to_f_magic
           when "Sonstiges"
             #FIXME
           else raise("Invalid Verkehrsmittel selection.")
         end
       when "Finanzantrag/Vortrag (Honorar)"
-        exp = d["Fahrtkosten".field_cleanup].to_f + ["Honorarhöhe".field_cleanup].to_f
+        exp = d["Fahrtkosten".field_cleanup].to_f_magic + ["Honorarhöhe".field_cleanup].to_f_magic
       else raise("Unimplemented calc_fix_expected_amount for #{kind}.")
     end
     exp
@@ -118,8 +147,8 @@ class Motion < ActiveRecord::Base
       #eval("val = val#{f[:name_append]}") if f[:name_append]
       errors.add(:base, "#{f[:name]} darf nicht leer sein.") if !f[:optional] && [:string, :integer, :float].include?(f[:type]) && val.blank?
       errors.add(:base, "#{f[:name]} ist kein gültiges Datum.") if :date ==f[:type] && !(val.is_a?(Date))
-      errors.add(:base, "#{f[:name]} ist keine ganze Zahl.") if :integer ==f[:type] && val.to_i.to_s != val
-      errors.add(:base, "#{f[:name]} ist keine Dezimalzahl.") if :float ==f[:type] && !(val.to_f.to_s == val || val.to_i.to_s == val)
+      errors.add(:base, "#{f[:name]} ist keine ganze Zahl.") if :integer ==f[:type] && val.valid_integer?
+      errors.add(:base, "#{f[:name]} ist keine Dezimalzahl.") if :float ==f[:type] && val.valid_float?
 
       if :select == f[:type]
         opt = f[:values].map { |v| v.is_a?(String) ? v : v[:name] }

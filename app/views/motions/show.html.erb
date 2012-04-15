@@ -1,75 +1,114 @@
+<% @m = @motion  %>
+
 <div class="container">
-  <h1><%=@motion.kind%> „<%=@motion.title%>“</h1>
-<p>
-  <b>Antragsteller/in</b><br/>
-  <%=@motion.contact_name ? @motion.contact_name + ", " : "" %>
-  <%=mail_to @motion.contact_mail %>
-  <%=@motion.contact_fon.blank? ? "" : ", " + @motion.contact_fon%>
-</p>
+  <h1><%=@m.kind%> „<%=@m.title%>“</h1>
+  <p>
+    <b>Antragsteller/in</b><br/>
+    <%=@m.contact_name ? @m.contact_name + ", " : "" %>
+    <%=mail_to @m.contact_mail %>
+    <%=@m.contact_fon.blank? ? "" : ", " + @m.contact_fon%>
+  </p>
 
-<p>
-  <b>Status</b><br/>
-  <%= @motion.status.capitalize %>. <%= @motion.top.blank? ? "Nirgens als TOP gelistet." : "TOP für die nächste Sitzung der #{@motion.top.capitalize}" %><br/>
-  Erstellt am <%=@motion.created_at.strftime("%e.%m.%Y")%>, letzte Änderung vor <%= time_ago_in_words @motion.updated_at %>.
-</p>
+  <p>
+    <b>Status</b><br/>
+    <%= @m.status + (@m.is_finished? ? " (d.h. insbesondere abgeschlossen)" : "") %>.
+    <%= @m.top.blank? ? "Nirgens als TOP gelistet." : "TOP für die nächste Sitzung der #{@m.top}." %><br/>
+    Erstellt am <%=@m.created_at.strftime("%e.%m.%Y")%>, letzte Änderung vor <%= time_ago_in_words @m.updated_at %>.
+  </p>
 
-<p>
-  <b>Rundbrief</b><br/>
-  <%= @motion.publication.nil? ? "bisher noch nicht veröffentlicht" : "veröffentlicht am #{@motion.publication.strftime("%e.%m.%Y")}" %>
-  (Aktenzeichen: <%= @motion.ident.blank? ? "?" : @motion.ident %>)
-</p>
+  <p>
+    <b>Rundbrief</b><br/>
+    <%= @m.publication.nil? ? "bisher noch nicht veröffentlicht" : "veröffentlicht am #{@m.publication.strftime("%e.%m.%Y")}" %>
+    (Aktenzeichen: <%= @m.ident.blank? ? "?" : @m.ident %>)
+  </p>
 
-<% if is_current_in_group?("finanzen") || is_current_in_referat?(@motion.referat) %>
+  <% if is_current_in_group?("finanzen") || is_current_in_referat?(@m.referat) %>
 
-    <%= form_tag("/motions/#{@motion.id}/change_referat", :method => "get", :id => "motion_change_referat") do %>
-      <b>Referat</b><br/>
-      <%=
-        opt = [["(keins)", ""]] + Referat.all.map { |r| [r.name, r.id] }
-        select_tag(:referat, options_for_select(opt, @motion.referat ? @motion.referat.id : ""), {:onchange => %(if(confirm("Soll das Referat sicher geändert werden? Wird es geändert, so erhält das neue Referat (wahrscheinlich) eine E-Mail und das alte kann nicht mehr zugreifen. Ob eine E-Mail versendet wird hängt vom Status ab und wird ggf. angezeigt.")) $('#motion_change_referat').submit();)})
-      %>
+      <%= form_tag("/motions/#{@m.id}/change_referat", :method => "get", :id => "motion_change_referat") do %>
+        <b>Referat</b><br/>
+        <%=
+          opt = [["(keins)", ""]] + Referat.all.map { |r| [r.name, r.id] }
+          select_tag(:referat, options_for_select(opt, @m.referat ? @m.referat.id : ""), {:onchange => %(if(confirm("Soll das Referat sicher geändert werden? Wird es geändert, so erhält das neue Referat (wahrscheinlich) eine E-Mail und das alte kann nicht mehr zugreifen. Ob eine E-Mail versendet wird hängt vom Status ab und wird ggf. angezeigt.")) $('#motion_change_referat').submit();), :style => "margin:0;"})
+        %>
+      <% end %>
+
+    <% else %>
+      <p>
+        <b>Referat</b><br/>
+        <%= @m.referat.nil? ? "Keinem Referat zugeordnet" : link_to(@m.referat.name, @m.referat) %>
+        <br/>
+        <small>Das Referat kann nur von Finanzern, den Refereten oder Roots geändert werden. <% if !current_user %><a href="/login">Logge Dich also ggf. ein</a>.<% end %></small>
+      </p>
     <% end %>
 
-  <% else %>
-    <p>
-      <b>Referat</b><br/>
-      <%= @motion.referat.nil? ? "Keinem Referat zugeordnet" : link_to(@motion.referat.name, @motion.referat) %>
-      <br/>
-      <small>Das Referat kann nur von Finanzern, den Refereten oder Roots geändert werden. <% if !current_user %><a href="/login">Logge Dich also ggf. ein</a>.<% end %></small>
-    </p>
-  <% end %>
+  <p>
+    <b>Beantragter Zuschuss:</b><br/>
+    <%= number_to_currency(@m.fin_expected_amount) %>
+    <%= @m.fin_expected_amount != @m.calc_fin_expected_amount ? " <small>(aus den ursprünglichen Angaben errechnet: #{number_to_currency @m.calc_fin_expected_amount}</small>".html_safe : "" %>
+  </p>
+
+  <p>
+    <b>Bisher abgebucht:</b><br/>
+    <%=@m.fin_charged_amount.nil? ? "Noch nichts" : number_to_currency(@m.fin_charged_amount) %>
+  </p>
 
 
-<p>
-  <b>Fin expected amount:</b>
-  <%= @motion.fin_expected_amount %>
-</p>
+  <div class="button-group">
+    <%= link_to 'Details bearbeiten', edit_motion_path(@m), :class => "button" %>
+    <% if @m.finanz? %>
+      <% if current_may_accept_deny?(@m) %>
+        <% is_new = @m.status == Motion::STATUS_NEW %>
+        <%= link_to "Antrag #{is_new ? "" : "(jetzt doch)"} annehmen und Geld genehmigen?", motion_grant_path(@m), :class => "button", :confirm => "Geld wirklich genehmigen (Der/die Antragsteller erhält eine E-Mail)?" if is_new || @m.status == Motion::STATUS_DENIED %>
+        <%= link_to "Antrag #{is_new ? "" : "(jetzt doch)"} ablehnen und Geld verweigern?", motion_deny_path(@m), :class => "button", :confirm => "Geld wirklich ablehnen (Der/die Antragsteller erhält eine E-Mail)?" if is_new || @m.status == Motion::STATUS_GRANTED   %>
+      <% end %>
+      <% if current_may_set_status?(@m) %>
+        <%= link_to "« doch keine Formulare da?", motion_set_status_path(@m, "STATUS_GRANTED"), :class => "button" if @m.status == Motion::STATUS_FORMS_ARRIVED %>
+        <%= link_to "Sind die Formulare eingegangen? »", motion_set_status_path(@m, "STATUS_FORMS_ARRIVED"), :class => "button" if @m.status == Motion::STATUS_GRANTED %>
 
-<p>
-  <b>Fin charged amount:</b>
-  <%= @motion.fin_charged_amount %>
-</p>
+        <%= link_to "« ZUV hat doch noch nicht geantwortet?", motion_set_status_path(@m, "STATUS_FORMS_ARRIVED"), :class => "button" if @m.status == Motion::STATUS_ZUV_GRANTED || @m.status == Motion::STATUS_ZUV_DENIED %>
+        <%= link_to "die ZUV hat den Antrag gebilligt? »", motion_set_status_path(@m, "STATUS_ZUV_GRANTED"), :class => "button" if @m.status == Motion::STATUS_FORMS_ARRIVED  %>
+        <%= link_to "die ZUV hat den Antrag abgelehnt? »", motion_set_status_path(@m, "STATUS_ZUV_DENIED"), :class => "button" if @m.status == Motion::STATUS_FORMS_ARRIVED  %>
+        <%= link_to "die ZUV hat den Antrag (doch) gebilligt?", motion_set_status_path(@m, "STATUS_ZUV_GRANTED"), :class => "button" if @m.status == Motion::STATUS_ZUV_DENIED  %>
+        <%= link_to "die ZUV hat den Antrag (doch) abgelehnt?", motion_set_status_path(@m, "STATUS_ZUV_DENIED"), :class => "button" if @m.status == Motion::STATUS_ZUV_GRANTED  %>
 
-<p>
-  <b>Fin deducted:</b>
-  <%= @motion.fin_deducted %>
-</p>
+        <%= link_to "« doch keine Rechnungen da?", motion_set_status_path(@m, "STATUS_ZUV_GRANTED"), :class => "button" if @m.status == Motion::STATUS_BILLS_ARRIVED  %>
+        <%= link_to "sind die Rechnungen eingegangen? »", motion_set_status_path(@m, "STATUS_BILLS_ARRIVED"), :class => "button" if @m.status == Motion::STATUS_ZUV_GRANTED  %>
 
-<p>
-  <b>Fin granted:</b>
-  <%= @motion.fin_granted %>
-</p>
-<div class="button-group">
-  <%= link_to 'Details bearbeiten', edit_motion_path(@motion), :class => "button" %>
-  <% if @motion.finanz? && is_current_in_group?([GROUPS[:finanzen], :root]) %>
-    <%= link_to @motion.fin_granted ? "Geld (doch) nicht genehmigen?" : "Geld genehmigen?", toggle_motion_fin_granted_path(@motion), :class => "button"  %>
-    <%= link_to @motion.fin_deducted ? "Weitere Abbuchungen erwartet?" : "Alle Abbuchungen abgeschlossen?", toggle_motion_fin_deducted_path(@motion), :class => "button"   %>
+        <%= link_to "« doch noch nicht gebucht?", motion_set_status_path(@m, "STATUS_BILLS_ARRIVED"), :class => "button" if @m.status == Motion::STATUS_DEDUCTED  %>
+        <%= link_to "Geld ist gebucht? »", motion_set_status_path(@m, "STATUS_DEDUCTED"), :class => "button" if @m.status == Motion::STATUS_BILLS_ARRIVED  %>
+
+        <%= link_to "« Antrag doch noch nicht abgeschlossen?", motion_set_status_path(@m, "STATUS_DEDUCTED"), :class => "button" if @m.status == Motion::STATUS_COMPLETED  %>
+        <%= link_to "Antrag ist abgeschlossen? »", motion_set_status_path(@m, "STATUS_COMPLETED"), :class => "button" if @m.status == Motion::STATUS_DEDUCTED  %>
+      <% end %>
+    <% end %>
+  </div>
+</div>
+
+
+
+<div class="container">
+  <h1>Antragsdetails</h1>
+  <b>Begründungstext</b><br/>
+  <p><%= @m.text %></p>
+
+  <% @m.get_form[:groups].each do |group| %>
+    <h2 style="margin-top:25px"><%=group[:group].html_safe%></h2>
+    <% group[:fields].each do |field| %>
+      <p>
+        <b><%=field[:name].html_safe%></b><br/>
+        <% value = @m.dynamic[field[:name].field_cleanup] %>
+        <%= case field[:type]
+          when :currency
+            number_to_currency value.to_f_magic
+          when :date
+            value.strftime("%e.%m.%Y") + " (vor #{time_ago_in_words value})"
+          else
+            value
+        end %>
+      </p>
+    <% end %>
   <% end %>
 </div>
-</div>
-
-
-
-
 
 
 <%= render "votes" %>

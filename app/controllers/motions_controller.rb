@@ -49,6 +49,8 @@ class MotionsController < ApplicationController
     else
       old = @motion.referat_id
       @motion.referat_id = @referat ? @referat.id : ""
+      # set correct top
+      @motion.top = @motion.get_top_state
       if old == @motion.referat_id
         flash[:warning] = "Das gewählte Referat ist schon das aktuelle."
       elsif @motion.save
@@ -72,13 +74,49 @@ class MotionsController < ApplicationController
     redirect_to @motion
   end
 
-  def toggle_motion_fin_granted
-    return unless force_group([:root, :finanzen])
+  def grant
     @motion = Motion.find(params[:id])
-    @motion.fin_granted = !@motion.fin_granted
+    return generic_denied_message unless current_may_accept_deny?(@motion)
+    @motion.status = Motion::STATUS_GRANTED
+    @motion.top = ""
     if @motion.save
-      add_comment(@motion, "#{current_user.name} hat #{@motion.fin_granted ? "das Geld genehmigt" : " die Geldgenehmigung zurückgenommen"}.")
-      flash[:notice] = "Status geändert, #{@motion.fin_granted ? "das Geld ist jetzt genehmigt" : "das Geld ist jetzt nicht mehr genehmigt"}. <a href='#{toggle_motion_fin_granted_path(@motion)}'>Rückgängig machen?</a>".html_safe
+      add_comment(@motion, "#{current_user.name} hat das Geld genehmigt bzw. den Antrag angenommen.")
+      Mailer.motion_granted(@motion)
+      flash[:notice] = "Status geändert, das Geld ist jetzt genehmigt bzw. der Antrag angenommen. Der/Die Antragsteller/in sollte eine E-Mail bekommen haben."
+    else
+      flash[:error] = "Konnte den Antrag nicht ändern."
+    end
+    redirect_to @motion
+  end
+
+  def deny
+    @motion = Motion.find(params[:id])
+    return generic_denied_message unless current_may_accept_deny?(@motion)
+    @motion.status = Motion::STATUS_DENIED
+    @motion.top = ""
+    if @motion.save
+      add_comment(@motion, "#{current_user.name} hat den Antrag abgelehnt.")
+      Mailer.motion_denied(@motion)
+      flash[:notice] = "Status geändert, der Antrag wurde abgelehnt. Der/Die Antragsteller/in sollte eine E-Mail bekommen haben."
+    else
+      flash[:error] = "Konnte den Antrag nicht ändern."
+    end
+    redirect_to @motion
+  end
+
+  # Sets the status to a value defined in the Motion class. Note that
+  # not the contents of the constant, but the constant’s name need to
+  # be passed. So if STATUS_DENIED = "Abgelehnt", then pass "STATUS_
+  # DENIED".
+  def set_status
+    @motion = Motion.find(params[:id])
+    return generic_denied_message unless current_may_set_status?(@motion)
+    redirect_to(@motion) and return unless params[:status] =~ /^[A-Z_]+$/ && Motion.const_defined?(params[:status])
+
+    @motion.status = Motion.const_get(params[:status])
+    if @motion.save
+      add_comment(@motion, "#{current_user.name} hat den Status auf „#{@motion.status}“ gesetzt.")
+      flash[:notice] = "Status erfolgreich auf „#{@motion.status}“ geändert."
     else
       flash[:error] = "Konnte den Antrag nicht ändern."
     end
@@ -183,6 +221,7 @@ class MotionsController < ApplicationController
     @motion.dynamic_fields = Base64.encode64(Marshal.dump(params[:dynamic]))
     @motion.fin_expected_amount = @motion.calc_fin_expected_amount
     @motion.status = Motion::STATUS_NEW
+    @motion.top = @motion.get_top_state
 
     uuid = UUIDTools::UUID.timestamp_create.to_s
     while Motion.find_by_uuid(uuid) != nil

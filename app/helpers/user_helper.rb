@@ -34,10 +34,12 @@ module UserHelper
   end
 
   # returns true if the current user is in the given group(s). Accepts
-  # an array or a string/symbol.
-  def is_current_in_group?(groups)
+  # an array or a string/symbol. Automatically allows root unless
+  # specified otherwise.
+  def is_current_in_group?(groups, root = true)
     return false unless current_user
     groups = [groups]
+    groups << "root" if root
     groups.flatten!
     raise "Invalid group specified. Add them in config/initializers/constants.rb" if groups.any? { |g| GROUPS[g.to_sym].nil? }
     groups.map! { |g| g.to_s }
@@ -65,7 +67,7 @@ module UserHelper
   # insufficient rights; true if it’s ok to proceed. Use it like this:
   #  return unless force_group("root")
   #  return unless force_group([:root, "asdf"])
-  def force_group(groups)
+  def force_group(groups, root = true)
     # require login
     return false unless force_login
     # Login ok but no current user?
@@ -73,7 +75,7 @@ module UserHelper
 
     # If the intersection of the groups is empty, the user doesn’t have
     # enough rights. Return true in that case.
-    ok = is_current_in_group?(groups)
+    ok = is_current_in_group?(groups, root)
     if not ok
       flash[:error] = "Du hast nicht genügend Rechte für diesen Vorgang."
       redirect_to (request.referer || "/")
@@ -111,6 +113,14 @@ module UserHelper
   def generic_denied_message
     flash[:error] = "Du hast nicht genügend Rechte für diesen Vorgang."
     redirect_to (request.referer || "/")
+  end
+
+  def current_may_accept_deny?(motion)
+    is_current_in_group?("finanzen") || (motion.referat_may_accept? && is_current_in_referat?(motion.referat))
+  end
+
+  def current_may_set_status?(motion)
+    is_current_in_group?("finanzen") && motion.finanz?
   end
 
   private
