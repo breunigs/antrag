@@ -101,7 +101,7 @@
           when :currency
             number_to_currency value.to_f_magic
           when :date
-            value.strftime("%e.%m.%Y") + " (vor #{time_ago_in_words value})"
+            value.strftime("%e.%m.%Y") + " (#{value.future? ? "in" : "vor"} #{time_ago_in_words value})"
           else
             value
         end %>
