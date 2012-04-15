@@ -36,6 +36,7 @@ class MotionsController < ApplicationController
 
   # GET /motions/1/edit
   def edit
+    return unless force_login
     @motion = Motion.find(params[:id])
   end
 
@@ -128,19 +129,6 @@ class MotionsController < ApplicationController
     redirect_to @motion
   end
 
-  def toggle_motion_fin_deducted
-    return unless force_group([:root, :finanzen])
-    @motion = Motion.find(params[:id])
-    @motion.fin_deducted = !@motion.fin_deducted
-    if @motion.save
-      add_comment(@motion, "#{current_user.name} hat das Geld als #{@motion.fin_deducted ? " (vollständig) abgebucht " : " noch nicht, bzw. nicht vollständig abgebucht"} markiert.")
-      flash[:notice] = "Status geändert, #{@motion.fin_deducted ? "das Geld wurde als (vollständig) abgebucht markiert" : "das Geld wurde als noch nicht, bzw. nicht vollständig abgebucht markiert"}. <a href='#{toggle_motion_fin_deducted_path(@motion)}'>Rückgängig machen?</a>".html_safe
-    else
-      flash[:error] = "Konnte den Antrag nicht ändern."
-    end
-    redirect_to @motion
-  end
-
   # POST /motions/1/store_attachment
   def store_attachment
     @motion = Motion.find(params[:id])
@@ -148,7 +136,7 @@ class MotionsController < ApplicationController
     @attachment.motion_id = @motion.id
     @attachment.ip = request.remote_ip
 
-    pp @attachment
+    #pp @attachment
     if @attachment.save
       flash[:notice] = "Dateianhang gespeichert."
       u = current_user ? (current_user.name + " hat ") : ""
@@ -249,11 +237,29 @@ class MotionsController < ApplicationController
   # PUT /motions/1
   # PUT /motions/1.json
   def update
+    return unless force_login
     @motion = Motion.find(params[:id])
 
+    if params[:motion][:fin_expected_amount]
+      @motion.fin_expected_amount = params[:motion][:fin_expected_amount] if is_current_in_group?("finanzen")
+      params[:motion].delete(:fin_expected_amount)
+    end
+
+    if params[:motion][:fin_charged_amount]
+      @motion.fin_charged_amount = params[:motion][:fin_charged_amount] if is_current_in_group?("finanzen")
+      params[:motion].delete(:fin_charged_amount)
+    end
+
+    @motion.attributes = params[:motion]
+    cmt = "#{current_user.name} hat folgende Eigenschaften geändert:\n\n"
+    @motion.changed_attributes.each do |attr, orig|
+      cmt << "#{Motion.human_attribute_name(attr)}: #{orig} → #{@motion[attr]}\n\n"
+    end
+
     respond_to do |format|
-      if @motion.update_attributes(params[:motion])
-        format.html { redirect_to @motion, notice: 'Motion was successfully updated.' }
+      if @motion.save
+        add_comment(@motion, cmt.strip)
+        format.html { redirect_to @motion, notice: 'Änderungen durchgeführt.' }
         format.json { head :no_content }
       else
         format.html { render action: "edit" }

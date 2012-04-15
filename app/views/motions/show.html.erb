@@ -27,7 +27,7 @@
       <%= form_tag("/motions/#{@m.id}/change_referat", :method => "get", :id => "motion_change_referat") do %>
         <b>Referat</b><br/>
         <%=
-          opt = [["(keins)", ""]] + Referat.all.map { |r| [r.name, r.id] }
+          opt = [["(keins = TOP FSK/RefKonf)", ""]] + Referat.all.map { |r| [r.name, r.id] }
           select_tag(:referat, options_for_select(opt, @m.referat ? @m.referat.id : ""), {:onchange => %(if(confirm("Soll das Referat sicher geändert werden? Wird es geändert, so erhält das neue Referat (wahrscheinlich) eine E-Mail und das alte kann nicht mehr zugreifen. Ob eine E-Mail versendet wird hängt vom Status ab und wird ggf. angezeigt.")) $('#motion_change_referat').submit();), :style => "margin:0;"})
         %>
       <% end %>
@@ -44,7 +44,7 @@
   <p>
     <b>Beantragter Zuschuss:</b><br/>
     <%= number_to_currency(@m.fin_expected_amount) %>
-    <%= @m.fin_expected_amount != @m.calc_fin_expected_amount ? " <small>(aus den ursprünglichen Angaben errechnet: #{number_to_currency @m.calc_fin_expected_amount}</small>".html_safe : "" %>
+    <%= @m.fin_expected_amount != @m.calc_fin_expected_amount ? " <small>(aus den ursprünglichen Angaben errechnet: #{number_to_currency @m.calc_fin_expected_amount})</small>".html_safe : "" %>
   </p>
 
   <p>

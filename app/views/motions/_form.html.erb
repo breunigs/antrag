@@ -1,7 +1,7 @@
 <%= form_for(@motion) do |f| %>
   <% if @motion.errors.any? %>
     <div id="error_explanation">
-      <h2><%= pluralize(@motion.errors.count, "error") %> prohibited this motion from being saved:</h2>
+      <h2>Der Antrag konnte nicht gespeichert werden, es gab <%= @motion.errors.count %> Fehler.</h2>
 
       <ul>
       <% @motion.errors.full_messages.each do |msg| %>
@@ -12,34 +12,37 @@
   <% end %>
 
   <div class="field">
-    <%= f.label :kind %>
-    <%= f.text_field :kind %>
-  </div>
-  <div class="field">
     <%= f.label :title %>
     <%= f.text_field :title %>
   </div>
   <div class="field">
-    <%= f.label :text %>
+    <%= f.label :text, "Begründung bzw. Beschreibung" %>
     <%= f.text_area :text %>
   </div>
   <div class="field">
-    <%= f.label :contact_mail %>
+    <%= f.label :contact_mail, "E-Mail Antragsteller" %>
     <%= f.text_field :contact_mail %>
   </div>
   <div class="field">
-    <%= f.label :contact_name %>
+    <%= f.label :contact_name, "Name Antragsteller" %>
     <%= f.text_field :contact_name %>
   </div>
   <div class="field">
-    <%= f.label :contact_fon %>
+    <%= f.label :contact_fon, "Telefonnummer Antragsteller" %>
     <%= f.text_field :contact_fon %>
   </div>
-  <div class="field">
-    <%= f.label :fin_expected_amount %>
-    <%= f.text_field :fin_expected_amount %>
-  </div>
+  <% if is_current_in_group?("finanzen") %>
+    <div class="field">
+      <%= f.label :fin_expected_amount %>
+      <%= f.text_field :fin_expected_amount %>
+    </div>
+
+    <div class="field">
+      <%= f.label :fin_charged_amount %>
+      <%= f.text_field :fin_charged_amount %>
+    </div>
+  <% end %>
   <div class="actions">
-    <%= f.submit %>
+    <%= f.submit :class => "button primary" %>
   </div>
 <% end %>

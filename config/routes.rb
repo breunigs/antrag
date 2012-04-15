@@ -19,10 +19,6 @@ Antrag::Application.routes.draw do
   get "/motions/:id/deny" => "motions#deny", :as => :motion_deny
   get "/motions/:id/set_status/:status" => "motions#set_status", :as => :motion_set_status
 
-  # toggles
-  get "/motions/:id/toggle_motion_fin_granted" => "motions#toggle_motion_fin_granted", :as => :toggle_motion_fin_granted
-  get "/motions/:id/toggle_motion_fin_deducted" => "motions#toggle_motion_fin_deducted", :as => :toggle_motion_fin_deducted
-
   # other stuff
   resources :referate
   resources :users

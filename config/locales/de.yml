@@ -206,6 +206,8 @@ de:
     groups: "Gruppen"
     file: "Datei"
     title: "Titel"
+    fin_charged_amount: "Gebuchte Gelder"
+    fin_expected_amount: "Beantragte Gelder"
 
   activerecord:
     # rename the models

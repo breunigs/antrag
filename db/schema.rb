@@ -59,8 +59,6 @@ ActiveRecord::Schema.define(:version => 20120415163557) do
     t.string   "status"
     t.float    "fin_expected_amount"
     t.float    "fin_charged_amount"
-    t.boolean  "fin_deducted"
-    t.boolean  "fin_granted"
     t.datetime "created_at",          :null => false
     t.datetime "updated_at",          :null => false
     t.string   "uuid"

@@ -6,7 +6,7 @@ class Motion < ActiveRecord::Base
   # only make the attributes mass-writable that may be entered by the
   # applicant.
   attr_accessible :kind, :title, :text, :contact_mail, :contact_name
-  attr_accessible :contact_fon, :fin_expected_amount, :referat_id
+  attr_accessible :contact_fon, :referat_id
 
   # these need to be present
   validates :kind, :title, :text, :contact_mail, :uuid, :dynamic_fields, :status, :presence => true
