@@ -6,7 +6,7 @@ name[:inhalt] = "Inhaltlicher Antrag"
 name[:reisekosten] = "Reisekostenantrag"
 name[:orientierung] = "Orientierungsveranstaltung"
 name[:vortrag] = "Vortrag (Honorar)"
-name[:material] = "Beschaffungsantrag"
+name[:beschaffung] = "Beschaffungsantrag"
 name[:sonstiges] = "Sonstiges"
 %>
 
@@ -118,7 +118,7 @@ name[:sonstiges] = "Sonstiges"
       <div class="motion-selector-box">
         <a class="button motion-selector">
           <span>¶</span>
-          <b><%=name[:material]%></b>
+          <b><%=name[:beschaffung]%></b>
         </a>
         <ul>
           <li>Möbel</li>
@@ -156,6 +156,8 @@ name[:sonstiges] = "Sonstiges"
     <%= render_motion_form(f, MOTION_ORIENTIERUNG, 3, "1=#{name[:finanz]}&2=#{name[:orientierung]}") %>
     <%= render_motion_form(f, MOTION_VORTRAG, 3, "1=#{name[:finanz]}&2=#{name[:vortrag]}") %>
     <%= render_motion_form(f, MOTION_REISEKOSTEN, 3, "1=#{name[:finanz]}&2=#{name[:reisekosten]}") %>
+    <%= render_motion_form(f, MOTION_SONSTIGES, 3, "1=#{name[:finanz]}&2=#{name[:sonstiges]}") %>
+    <%= render_motion_form(f, MOTION_BESCHAFFUNG, 3, "1=#{name[:finanz]}&2=#{name[:beschaffung]}") %>
 
     <%##################################################################%>
 

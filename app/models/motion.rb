@@ -114,13 +114,17 @@ class Motion < ActiveRecord::Base
           when "Bahn"
             exp = d["Kosten Bahnfahrt".field_cleanup].to_f_magic
           when "Auto"
-            exp = d["Automiete".field_cleanup].to_f_magic + ["Treibstoffkosten".field_cleanup].to_f_magic
+            exp = d["Automiete".field_cleanup].to_f_magic + d["Treibstoffkosten".field_cleanup].to_f_magic
           when "Sonstiges"
             exp = d["Kosten insgesamt".field_cleanup].to_f_magic
           else raise("Invalid Verkehrsmittel selection.")
         end
       when "Finanzantrag/Vortrag (Honorar)"
-        exp = d["Fahrtkosten".field_cleanup].to_f_magic + ["Honorarhöhe".field_cleanup].to_f_magic
+        exp = d["Fahrtkosten".field_cleanup].to_f_magic + d["Honorarhöhe".field_cleanup].to_f_magic
+      when "Finanzantrag/Sonstiges"
+        exp = d["Kosten".field_cleanup].to_f_magic
+      when "Finanzantrag/Beschaffungsantrag"
+        exp = d["Kosten".field_cleanup].to_f_magic
       else raise("Unimplemented calc_fix_expected_amount for #{kind}.")
     end
     exp
@@ -144,7 +148,6 @@ class Motion < ActiveRecord::Base
     get_form_fields.each do |f|
       val =  d[f[:name].field_cleanup]
       val = val[f[:index].to_s] if f[:index]
-      #eval("val = val#{f[:name_append]}") if f[:name_append]
       errors.add(:base, "#{f[:name]} darf nicht leer sein.") if !f[:optional] && [:string, :integer, :float].include?(f[:type]) && val.blank?
       errors.add(:base, "#{f[:name]} ist kein gültiges Datum.") if :date ==f[:type] && !(val.is_a?(Date))
       errors.add(:base, "#{f[:name]} ist keine ganze Zahl.") if :integer ==f[:type] && !val.valid_integer?

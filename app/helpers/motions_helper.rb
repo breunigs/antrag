@@ -13,6 +13,7 @@ module MotionsHelper
         s << %(<label for="#{name}">#{field[:name]}</label>)
         css = field[:optional] ? "" : "required"
         v = params[:dynamic][gr][name_clean] if params && params[:dynamic] && params[:dynamic][gr]
+        v = v[field[:index]] if field[:index]
         case field[:type]
           when :integer  then s << number_field_tag(name, v ? v: "0",   :class => css)
           when :float    then s << number_field_tag(name, v ? v: "0,0", :class => css)
@@ -21,7 +22,7 @@ module MotionsHelper
           when :string   then s << text_field_tag(  name, v ? v: "",    :placeholder => field[:placeholder], :class => css)
           when :date     then s << date_select(name, "", :default => get_date_from_params(field, data), :class => css)
           when :select   then
-            s << select(name, "", get_select_values(field), :class => css)
+            s << select(name, "", get_select_values(field, v), :class => css)
             s << get_js_for_dynamic_select_info(field, data)
           else raise "Field type is unimplemented: #{field[:type]}"
         end
@@ -48,10 +49,11 @@ module MotionsHelper
   # see config/initializers/motion_data.rb
   # def get_identifiers_for_field(field, constant)
 
-  def get_select_values(field)
-    field[:values].map do |f|
+  def get_select_values(field, selected)
+    ff = field[:values].map do |f|
       f.is_a?(String) ? f : f[:name]
     end
+    options_for_select(ff, selected)
   end
 
   def get_js_for_dynamic_select_info(field, constant)
@@ -100,14 +102,26 @@ module MotionsHelper
   def get_date_from_params(field, constant)
     id, name_clean, name, const_id = get_identifiers_for_field(field, constant)
     x = begin
-      d_y = params[:dynamic][const_id][name_clean]["(1i)"].to_i
-      d_m = params[:dynamic][const_id][name_clean]["(2i)"].to_i
-      d_d = params[:dynamic][const_id][name_clean]["(3i)"].to_i
-      Date.new(d_y, d_m, d_d)
-    rescue
+      d = params[:dynamic][const_id][name_clean]
+      if d.is_a? Date
+        d
+      else
+        d_y = d["(1i)"].to_i
+        d_m = d["(2i)"].to_i
+        d_d = d["(3i)"].to_i
+        Date.new(d_y, d_m, d_d)
+      end
+    rescue Exception => e
+      logger.warn "Date Detection failed"
+      logger.warn e.message
       Date.today
     end
-    # puts x.to_s
+    puts "==="
+    puts name
+    pp x
+    pp params[:dynamic][const_id][name_clean]
+    puts
+    puts
     x
   end
 

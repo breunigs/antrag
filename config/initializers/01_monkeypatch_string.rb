@@ -6,11 +6,12 @@ class String
   end
 
   def valid_integer?
-    self.to_i_magic.to_s == self.cleanup_magic
+    !self.cleanup_magic !~ /^\s*[0-9]+\s*$/
   end
 
   def valid_float?
-    self.to_f_magic.to_s == self.cleanup_magic || valid_integer?
+    # http://stackoverflow.com/questions/1034418/determine-if-a-string-is-a-valid-float-value
+    !self.cleanup_magic !~ /^\s*[+-]?((\d+_?)*\d+(\.(\d+_?)*\d+)?|\.(\d+_?)*\d+)(\s*|([eE][+-]?(\d+_?)*\d+)\s*)$/
   end
 
   def to_f_magic

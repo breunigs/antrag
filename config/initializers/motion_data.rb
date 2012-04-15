@@ -1,5 +1,12 @@
 # encoding: utf-8
 
+# If something is changed here, it also needs to be adjusted in the
+# app/views/motions/kingslanding.html.erb
+# app/models/motion.rb (the function that calculates the amount of money requested)
+# likely app/assets/javascripts/step_magic.js in case of hard coded values
+# likely app/helpers/motion_helpers.rb in case of hard coded values
+# The best is to grep for all strings you are about to change.
+
 MOTION_ORIENTIERUNG = {
   :ident => "Finanzantrag/Orientierungsveranstaltung", # rename in Kingslanding and motion model, too
   :groups => [
@@ -45,10 +52,10 @@ MOTION_REISEKOSTEN = {
       { :name => "Name",      :index => "0", :type => :string, :info => "Vollständiger Name, so wie er auf dem Personalausweis zu finden ist." },
       { :name => "Bahncard",  :index => "0", :type => :select, :values => ["keine", "BahnCard 25", "BahnCard 50" ]},
       (1..14).map do |i|
-        [{ :name => "Name",      :index => i.to_s, :type => :string, :optional => true},
+        [{ :name => "Name",      :index => i.to_s, :type => :string, :optional => true, :hide_next_if_empty => true},
          { :name => "Bahncard",  :index => i.to_s, :type => :select, :values => ["keine", "BahnCard 25", "BahnCard 50"], :optional => true}]
       end,
-      { :name => "Name",      :index => "15", :type => :string, :optional => true},
+      { :name => "Name",      :index => "15", :type => :string, :optional => true, :hide_next_if_empty => true},
       { :name => "Bahncard",  :index => "15", :type => :select, :values => ["keine", "BahnCard 25", "BahnCard 50"], :info => "Wenn ihr noch mehr seid, gebt die anderen bitte im Freitext an.", :optional => true }
 
     ].flatten}
@@ -77,7 +84,27 @@ MOTION_VORTRAG = {
   ]
 }
 
-ALL_MOTIONS = [MOTION_VORTRAG, MOTION_REISEKOSTEN, MOTION_ORIENTIERUNG]
+MOTION_SONSTIGES = {
+  :ident => "Finanzantrag/Sonstiges",  # rename in Kingslanding and motion model, too
+  :groups => [
+    { :group => "Projekt", :fields => [
+      { :name => "Projekt&shy;bezeichnung", :type => :string },
+      { :name => "Kosten", :type => :currency }]
+    }
+  ]
+}
+
+MOTION_BESCHAFFUNG = {
+  :ident => "Finanzantrag/Beschaffungsantrag",  # rename in Kingslanding and motion model, too
+  :groups => [
+    { :group => "Was soll beschafft werden?", :fields => [
+      { :name => "Gegenstände", :type => :string, :info => "z.B. Möbel, Büromaterial, …" },
+      { :name => "Kosten", :type => :currency }]
+    }
+  ]
+}
+
+ALL_MOTIONS = [MOTION_VORTRAG, MOTION_REISEKOSTEN, MOTION_ORIENTIERUNG, MOTION_BESCHAFFUNG, MOTION_SONSTIGES]
 
 # first is the JS identifier, second the name without the dynamic[]
 # boilerplate and the last one is how the field’s name attribute should

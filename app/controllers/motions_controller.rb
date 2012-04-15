@@ -203,7 +203,7 @@ class MotionsController < ApplicationController
         if value.is_a?(Array)
           params[:dynamic][kind][name] = params[:dynamic][kind][name].first
         end
-        if value.is_a?(Hash) # entries with :index => blub
+        if value.is_a?(Hash) && !value.keys.include?("(3i)") # entries with :index => blub or dates
           value.each do |k,v|
             params[:dynamic][kind][name][k] = v.first
           end

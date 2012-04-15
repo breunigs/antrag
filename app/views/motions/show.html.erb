@@ -4,7 +4,7 @@
   <h1><%=@m.kind%> „<%=@m.title%>“</h1>
   <p>
     <b>Antragsteller/in</b><br/>
-    <%=@m.contact_name ? @m.contact_name + ", " : "" %>
+    <%=@m.contact_name.blank? ? "" : @m.contact_name + ", " %>
     <%=mail_to @m.contact_mail %>
     <%=@m.contact_fon.blank? ? "" : ", " + @m.contact_fon%>
   </p>
@@ -92,11 +92,38 @@
   <p><%= @m.text %></p>
 
   <% @m.get_form[:groups].each do |group| %>
+    <% hide_dependent = []
+       hide_next = false%>
     <h2 style="margin-top:25px"><%=group[:group].html_safe%></h2>
     <% group[:fields].each do |field| %>
+      <%
+        # hack to hide all the BahnCard Select boxes
+        if hide_next
+          hide_next = false
+          next
+        end
+
+        # hide all dependent fields that are NOT selected
+        next if hide_dependent.include?(field[:name])
+        value = @m.dynamic[field[:name].field_cleanup]
+        value = value[field[:index]] if field[:index]
+
+        # skip empty entries
+        if value.blank?
+          hide_next = field[:hide_next_if_empty] ? true : false
+          next
+        end
+
+        # collect dependent fields from select’s options that are NOT
+        # selected.
+        hide_dependent += field[:values].map do |v|
+          v.is_a?(String) ||v[:name] == value \
+            ? nil \
+            : v[:depend]
+        end.flatten.compact if field[:type] == :select
+      %>
       <p>
         <b><%=field[:name].html_safe%></b><br/>
-        <% value = @m.dynamic[field[:name].field_cleanup] %>
         <%= case field[:type]
           when :currency
             number_to_currency value.to_f_magic
