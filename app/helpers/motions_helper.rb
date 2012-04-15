@@ -13,7 +13,7 @@ module MotionsHelper
         s << %(<label for="#{name}">#{field[:name]}</label>)
         css = field[:optional] ? "" : "required"
         v = params[:dynamic][gr][name_clean] if params && params[:dynamic] && params[:dynamic][gr]
-        v = v[field[:index]] if field[:index]
+        v = v[field[:index]] if field[:index] && v.is_a?(Hash)
         case field[:type]
           when :integer  then s << number_field_tag(name, v ? v: "0",   :class => css)
           when :float    then s << number_field_tag(name, v ? v: "0,0", :class => css)
@@ -116,12 +116,6 @@ module MotionsHelper
       logger.warn e.message
       Date.today
     end
-    puts "==="
-    puts name
-    pp x
-    pp params[:dynamic][const_id][name_clean]
-    puts
-    puts
     x
   end
 
