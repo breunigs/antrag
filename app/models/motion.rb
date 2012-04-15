@@ -147,8 +147,8 @@ class Motion < ActiveRecord::Base
       #eval("val = val#{f[:name_append]}") if f[:name_append]
       errors.add(:base, "#{f[:name]} darf nicht leer sein.") if !f[:optional] && [:string, :integer, :float].include?(f[:type]) && val.blank?
       errors.add(:base, "#{f[:name]} ist kein gültiges Datum.") if :date ==f[:type] && !(val.is_a?(Date))
-      errors.add(:base, "#{f[:name]} ist keine ganze Zahl.") if :integer ==f[:type] && val.valid_integer?
-      errors.add(:base, "#{f[:name]} ist keine Dezimalzahl.") if :float ==f[:type] && val.valid_float?
+      errors.add(:base, "#{f[:name]} ist keine ganze Zahl.") if :integer ==f[:type] && !val.valid_integer?
+      errors.add(:base, "#{f[:name]} ist keine Dezimalzahl.") if [:currency, :float].include?(f[:type]) && !val.valid_float?
 
       if :select == f[:type]
         opt = f[:values].map { |v| v.is_a?(String) ? v : v[:name] }

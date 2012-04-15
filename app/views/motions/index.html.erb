@@ -1,47 +1,24 @@
-<h1>Listing motions</h1>
+<div class="container">
+  <h1>TOPs für die nächste…</h1>
+  <h2>…FSK Sitzung</h2>
 
-<table>
-  <tr>
-    <th>kind</th>
-    <th>Title</th>
-    <th>Text</th>
-    <th>Contact mail</th>
-    <th>Contact name</th>
-    <th>Contact fon</th>
-    <th>Ident</th>
-    <th>Publication</th>
-    <th>Status</th>
-    <th>Fin expected amount</th>
-    <th>Fin charged amount</th>
-    <th>Fin deducted</th>
-    <th>Fin granted</th>
-    <th></th>
-    <th></th>
-    <th></th>
-  </tr>
+  <%= render :partial => 'table', :locals => {:motions => @motions_fsk} %>
 
-<% @motions.each do |motion| %>
-  <tr>
-    <td><%= motion.kind %></td>
-    <td><%= motion.title %></td>
-    <td><%= motion.text %></td>
-    <td><%= motion.contact_mail %></td>
-    <td><%= motion.contact_name %></td>
-    <td><%= motion.contact_fon %></td>
-    <td><%= motion.ident %></td>
-    <td><%= motion.publication %></td>
-    <td><%= motion.status %></td>
-    <td><%= motion.fin_expected_amount %></td>
-    <td><%= motion.fin_charged_amount %></td>
-    <td><%= motion.fin_deducted %></td>
-    <td><%= motion.fin_granted %></td>
-    <td><%= link_to 'Show', motion %></td>
-    <td><%= link_to 'Edit', edit_motion_path(motion) %></td>
-    <td><%= link_to 'Destroy', motion, confirm: 'Are you sure?', method: :delete %></td>
-  </tr>
-<% end %>
-</table>
+  <br/>
+  <br/>
 
-<br />
+  <h2>…RefKonf Sitzung</h2>
+  <%= render :partial => 'table', :locals => {:motions => @motions_refkonf} %>
+</div>
 
-<%= link_to 'New Motion', new_motion_path %>
+<div class="container">
+  <h1>Nach Status sortierte Anträge</h1>
+  <% @motions_status.each do |status, motions| %>
+    <% next if motions.empty? %>
+    <h2><%=status%> (<%=motions.count%>)</h2>
+    <%= render :partial => 'table', :locals => {:motions => motions} %>
+    <br/>
+    <br/>
+  <% end %>
+</div>
+

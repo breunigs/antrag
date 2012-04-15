@@ -7,4 +7,6 @@ class Referat < ActiveRecord::Base
   validates_format_of :mail, :with => MAIL_REGEX
 
   has_and_belongs_to_many :users
+
+  has_many :motions
 end

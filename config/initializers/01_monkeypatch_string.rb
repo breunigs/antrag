@@ -6,11 +6,11 @@ class String
   end
 
   def valid_integer?
-    self.to_i_magic.to_s == val.cleanup_magic
+    self.to_i_magic.to_s == self.cleanup_magic
   end
 
   def valid_float?
-    self.to_f_magic.to_s == val.cleanup_magic || valid_integer?
+    self.to_f_magic.to_s == self.cleanup_magic || valid_integer?
   end
 
   def to_f_magic

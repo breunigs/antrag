@@ -18,18 +18,22 @@ class Mailer < ActionMailer::Base
     add_motion_headers(motion)
 
     # send mails manually for each mail so that reply-to simply works
-    mail(:to => @motion.submitter, :subject => "Neuer Antrag (Kopie)", :reply_to => [mail, MAIL_FROM]).deliver if mail_to_submitter
-    mail(:to => mail, :subject => "Neuer Antrag", :reply_to => [@motion.submitter, MAIL_FROM]).deliver unless mail.empty?
+    ma = mail(:to => @motion.submitter, :subject => "Neuer Antrag (Kopie)", :reply_to => [mail, MAIL_FROM]).deliver if mail_to_submitter
+    mb = mail(:to => mail, :subject => "Neuer Antrag", :reply_to => [@motion.submitter, MAIL_FROM]).deliver unless mail.empty?
+    store_message_id(motion, [ma, mb])
   end
 
   def motion_denied(motion)
     mail = []
     mail << MAIL_FINANZ
-    mail << referat.mail if referat
+    mail << motion.referat.mail if motion.referat
 
     add_motion_headers(motion)
 
-    mail(:to => @motion.submitter, :subject => "Antrag abgelehnt", :reply_to => mail).deliver
+    @motion = motion
+
+    m = mail(:to => @motion.submitter, :subject => "Antrag abgelehnt", :reply_to => mail).deliver
+    store_message_id(motion, m)
   end
 
   def motion_granted(motion)
@@ -39,7 +43,8 @@ class Mailer < ActionMailer::Base
 
     add_motion_headers(motion)
 
-    mail(:to => @motion.submitter, :subject => "Antrag angenommen: Nächste Schritte", :reply_to => mail).deliver
+    m = mail(:to => @motion.submitter, :subject => "Antrag angenommen: Nächste Schritte", :reply_to => mail).deliver
+    store_message_id(motion, m)
   end
 
   private
@@ -49,5 +54,15 @@ class Mailer < ActionMailer::Base
     headers["X-Antrag-ID"] = motion.id
     headers["X-Antrag-Status"] = motion.status
     headers["X-Antrag-Kind"] = motion.kind
+    headers["References"] = motion.references unless motion.message_id.blank?
   end
+
+  def store_message_id(motion, message)
+    motion.references ||= ""
+    message = [message] if message.is_a? String
+    message.flatten.each { |m|  motion.references += " <#{m.message_id}>" unless motion.references.include?("<#{m.message_id}>") }
+    motion.save
+  end
+
+
 end

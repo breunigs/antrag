@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120415145539) do
+ActiveRecord::Schema.define(:version => 20120415163557) do
 
   create_table "attachments", :force => true do |t|
     t.string   "file_file_name"
@@ -67,6 +67,7 @@ ActiveRecord::Schema.define(:version => 20120415145539) do
     t.integer  "referat_id"
     t.text     "dynamic_fields"
     t.string   "top"
+    t.text     "references"
   end
 
   create_table "referate", :force => true do |t|

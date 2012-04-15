@@ -9,7 +9,12 @@ class MotionsController < ApplicationController
   # GET /motions
   # GET /motions.json
   def index
-    @motions = Motion.all
+    return unless force_login
+
+    @motions_fsk = Motion.find_all_by_top([Motion::TOP_BOTH, Motion::TOP_FSK])
+    @motions_refkonf = Motion.find_all_by_top([Motion::TOP_BOTH, Motion::TOP_REFKONF])
+
+    @motions_status = Motion.find(:all, :order => "status, created_at").group_by { |m| m.status }
 
     respond_to do |format|
       format.html # index.html.erb
@@ -232,7 +237,7 @@ class MotionsController < ApplicationController
       if @motion.save
         Mailer.new_motion(@motion, @motion.referat, @motion.finanz?, true)
 
-        format.html { redirect_to @motion, notice: 'Motion was successfully created.' }
+        format.html { redirect_to @motion, notice: 'Antrag erfolgreich erstellt. Die entsprechenden Referate haben bereits eine E-Mail erhalten. Bitte prüfe, dass alle Angaben vollständig sind und ergänze sie ggf. in den Kommentaren. Denke auch daran, eventuelle Anhänge hochzuladen.' }
         format.json { render json: @motion, status: :created, location: @motion }
       else
         format.html { render action: "kingslanding" }

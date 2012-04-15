@@ -15,3 +15,16 @@
   <%= link_to 'Daten bearbeiten', edit_referat_path(@referat), :class => "button primary" %>
   <%= link_to 'Zerstören', @fachschaft, confirm: 'Referat wirklich löschen?', method: :delete, :class => "button danger" if is_current_root? %>
 </div>
+
+
+
+<div class="container">
+  <h1>Zugeordnete Anträge</h1>
+  <% @motions_status.each do |status, motions| %>
+    <% next if motions.empty? %>
+    <h2><%=status%> (<%=motions.count%>)</h2>
+    <%= render :partial => 'motions/table', :locals => {:motions => motions} %>
+    <br/>
+    <br/>
+  <% end %>
+</div>

@@ -14,6 +14,7 @@ class ReferateController < ApplicationController
   # GET /referate/1.json
   def show
     @referat = Referat.find(params[:id])
+    @motions_status = @referat.motions.find(:all, :order => "status, created_at").group_by { |m| m.status }
 
     respond_to do |format|
       format.html # show.html.erb
