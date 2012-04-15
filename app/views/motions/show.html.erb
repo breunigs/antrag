@@ -1,44 +1,43 @@
 <div class="container">
   <h1><%=@motion.kind%> „<%=@motion.title%>“</h1>
 <p>
-  <b>Text:</b>
-  <%= @motion.text %>
+  <b>Antragsteller/in</b><br/>
+  <%=@motion.contact_name ? @motion.contact_name + ", " : "" %>
+  <%=mail_to @motion.contact_mail %>
+  <%=@motion.contact_fon.blank? ? "" : ", " + @motion.contact_fon%>
 </p>
 
 <p>
-  <b>Is top:</b>
-  <%= @motion.is_top %>
+  <b>Status</b><br/>
+  <%= @motion.status.capitalize %>. <%= @motion.top.blank? ? "Nirgens als TOP gelistet." : "TOP für die nächste Sitzung der #{@motion.top.capitalize}" %><br/>
+  Erstellt am <%=@motion.created_at.strftime("%e.%m.%Y")%>, letzte Änderung vor <%= time_ago_in_words @motion.updated_at %>.
 </p>
 
 <p>
-  <b>Contact mail:</b>
-  <%= @motion.contact_mail %>
+  <b>Rundbrief</b><br/>
+  <%= @motion.publication.nil? ? "bisher noch nicht veröffentlicht" : "veröffentlicht am #{@motion.publication.strftime("%e.%m.%Y")}" %>
+  (Aktenzeichen: <%= @motion.ident.blank? ? "?" : @motion.ident %>)
 </p>
 
-<p>
-  <b>Contact name:</b>
-  <%= @motion.contact_name %>
-</p>
+<% if is_current_in_group?("finanzen") || is_current_in_referat?(@motion.referat) %>
 
-<p>
-  <b>Contact fon:</b>
-  <%= @motion.contact_fon %>
-</p>
+    <%= form_tag("/motions/#{@motion.id}/change_referat", :method => "get", :id => "motion_change_referat") do %>
+      <b>Referat</b><br/>
+      <%=
+        opt = [["(keins)", ""]] + Referat.all.map { |r| [r.name, r.id] }
+        select_tag(:referat, options_for_select(opt, @motion.referat ? @motion.referat.id : ""), {:onchange => %(if(confirm("Soll das Referat sicher geändert werden? Wird es geändert, so erhält das neue Referat (wahrscheinlich) eine E-Mail und das alte kann nicht mehr zugreifen. Ob eine E-Mail versendet wird hängt vom Status ab und wird ggf. angezeigt.")) $('#motion_change_referat').submit();)})
+      %>
+    <% end %>
 
-<p>
-  <b>Ident:</b>
-  <%= @motion.ident %>
-</p>
+  <% else %>
+    <p>
+      <b>Referat</b><br/>
+      <%= @motion.referat.nil? ? "Keinem Referat zugeordnet" : link_to(@motion.referat.name, @motion.referat) %>
+      <br/>
+      <small>Das Referat kann nur von Finanzern, den Refereten oder Roots geändert werden. <% if !current_user %><a href="/login">Logge Dich also ggf. ein</a>.<% end %></small>
+    </p>
+  <% end %>
 
-<p>
-  <b>Publication:</b>
-  <%= @motion.publication %>
-</p>
-
-<p>
-  <b>Status:</b>
-  <%= @motion.status %>
-</p>
 
 <p>
   <b>Fin expected amount:</b>
@@ -61,7 +60,6 @@
 </p>
 <div class="button-group">
   <%= link_to 'Details bearbeiten', edit_motion_path(@motion), :class => "button" %>
-  <%= link_to @motion.is_top ? "als TOP streichen?" : "als TOP aufnehmen?", toggle_motion_top_path(@motion), :class => "button" %>
   <% if @motion.finanz? && is_current_in_group?([GROUPS[:finanzen], :root]) %>
     <%= link_to @motion.fin_granted ? "Geld (doch) nicht genehmigen?" : "Geld genehmigen?", toggle_motion_fin_granted_path(@motion), :class => "button"  %>
     <%= link_to @motion.fin_deducted ? "Weitere Abbuchungen erwartet?" : "Alle Abbuchungen abgeschlossen?", toggle_motion_fin_deducted_path(@motion), :class => "button"   %>

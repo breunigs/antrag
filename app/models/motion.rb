@@ -9,13 +9,15 @@ class Motion < ActiveRecord::Base
   attr_accessible :contact_fon, :fin_expected_amount, :referat_id
 
   # these need to be present
-  validates :kind, :title, :text, :contact_mail, :uuid, :dynamic_fields, :presence => true
+  validates :kind, :title, :text, :contact_mail, :uuid, :dynamic_fields, :status, :presence => true
 
   # if present, please be numbers
   validates :fin_expected_amount, :fin_charged_amount, :numericality => true, :allow_blank => true
 
   # validate the mail address is valid
   validates_format_of :contact_mail, :with => MAIL_REGEX
+
+  validates_format_of :top, :with => /^fsk|refkonf$/i, :allow_blank => true
 
   # limit kinds of motions.
   validates_format_of :kind, :with => /^[\sa-z\/]+$/i
@@ -30,12 +32,22 @@ class Motion < ActiveRecord::Base
 
   belongs_to :referat
 
+  # Constants for status handling
+  STATUS_NEW = "neu"
+
+
   def is_public?
     !publication.blank?
   end
 
   def finanz?
-    kind == "finanz"
+    kind =~ /^Finanzantrag\//
+  end
+
+  # Returns the name/mail of the submitter in mail header friendly
+  # format
+  def submitter
+    contact_name.blank? ? contact_mail : "#{contact_name} <#{contact_mail}>"
   end
 
   # finds all motions that are still open for voting
@@ -58,7 +70,31 @@ class Motion < ActiveRecord::Base
   # motion, unless specified otherwise.
   def dynamic(subblock = true)
     @dynamic_unmarshaled ||=Marshal.load(Base64.decode64(dynamic_fields))
-    subblock ? @dynamic_unmarshaled[kind.gsub(/[^a-z0-9]+/i, "_")] : @dynamic_unmarshaled
+    subblock ? @dynamic_unmarshaled[kind.field_cleanup] : @dynamic_unmarshaled
+  end
+
+  def calc_fin_expected_amount
+    # collect all fields that make up the fin_exp_amount
+    exp = 9999.99
+    d = dynamic
+    case kind
+      when "Finanzantrag/Orientierungsveranstaltung"
+        exp = d["beantragter Zuschuss".field_cleanup].to_f
+      when "Finanzantrag/Reisekostenantrag"
+        case d["Verkehrsmittel".field_cleanup]
+          when "Bahn"
+            exp = d["Kosten Bahnfahrt".field_cleanup].to_f
+          when "Auto"
+            exp = d["Automiete".field_cleanup].to_f + ["Treibstoffkosten".field_cleanup].to_f
+          when "Sonstiges"
+            #FIXME
+          else raise("Invalid Verkehrsmittel selection.")
+        end
+      when "Finanzantrag/Vortrag (Honorar)"
+        exp = d["Fahrtkosten".field_cleanup].to_f + ["Honorarhöhe".field_cleanup].to_f
+      else raise("Unimplemented calc_fix_expected_amount for #{kind}.")
+    end
+    exp
   end
 
   # validates the selected kind actually exists

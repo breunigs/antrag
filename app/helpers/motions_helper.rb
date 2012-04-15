@@ -44,17 +44,8 @@ module MotionsHelper
 
   private
 
-  # first is the JS identifier, second the name without the dynamic[]
-  # boilerplate and the last one is how the field’s name attribute should
-  # be. Forth is the kind identifier used in the name field.
-  def get_identifiers_for_field(field, constant)
-    g = constant[:ident].field_cleanup
-    name_clean = field[:name].gsub("&shy;", "").field_cleanup
-    name = "dynamic[#{g}][#{name_clean}]"
-    name << "[#{field[:index]}]" if field[:index]
-    id = name.field_cleanup
-    return id, name_clean, name, g
-  end
+  # see config/initializers/motion_data.rb
+  # def get_identifiers_for_field(field, constant)
 
   def get_select_values(field)
     field[:values].map do |f|

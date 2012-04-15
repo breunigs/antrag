@@ -11,12 +11,24 @@ module UserHelper
     User.is_root?(current_user)
   end
 
+  # returns true if the current user is in the given Referat. Expects
+  # referat to be either the Model or its ID. Set root to false if
+  # the root user is not qualified.
+  def is_current_in_referat?(referat, root = true)
+    return false unless current_user
+    return true if root && is_current_root?
+    return false if referat.nil?
+    referat = Referat.find(referat) if referat.is_a? Integer
+    referat.users.include?(current_user)
+  end
+
   # returns true if the current user is in the given Fachschaft. Expects
   # fachschaft to be either the Model or its ID. Set root to false if
   # the root user is not qualified.
   def is_current_in_fs?(fachschaft, root = true)
     return false unless current_user
     return true if root && is_current_root?
+    return false if fachschaft.nil?
     fachschaft = Fachschaft.find(fachschaft) if fachschaft.is_a? Integer
     fachschaft.users.include?(current_user)
   end
@@ -91,6 +103,14 @@ module UserHelper
       redirect_to (request.referer || "/")
       return false
     end
+  end
+
+  # Prints a generic denied message and redirects the user. Use it like
+  #   return generic_denied_message
+  # after you determined the current_user doesn’t have access.
+  def generic_denied_message
+    flash[:error] = "Du hast nicht genügend Rechte für diesen Vorgang."
+    redirect_to (request.referer || "/")
   end
 
   private

@@ -1,0 +1,20 @@
+Mailer#new_motion
+
+<%= @greeting %>,
+
+es ist ein neuer Antrag eingegangen. Es handelt sich um einen
+  <%= @motion.kind %>
+mit dem Titel
+  <%= @motion.title %>
+
+Bitte lasst dem/der Antragsteller/in genügend Zeit evtl. noch Anlagen hochzuladen. Er/Sie hat auch eine Kopie dieser E-Mail erhalten.
+
+Die Details bzw. der Status können unter folgender Adresse eingesehen werden:
+
+<%= REMOTE_BASE + "/motions/#{@motion.id}" %>
+
+--<%=" "%>
+
+Mailtext doof? Ändere mich in: app/views/app/views/mailer/new_motion.text.erb
+
+Hinweis: Hinter der E-Mail Adresse <%=MAIL_FROM%> sitzt kein Mensch. Wenn Du Antwort erhalten möchtest, schreibe bitte also entweder an den/die Antragsteller/in oder eines der Referate.

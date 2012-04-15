@@ -40,15 +40,35 @@ class MotionsController < ApplicationController
     @attachment = Attachment.new
   end
 
-  def toggle_motion_top
-    return unless force_login
+  def change_referat
     @motion = Motion.find(params[:id])
-    @motion.is_top = !@motion.is_top
-    if @motion.save
-      flash[:notice] = "Status geändert, jetzt #{@motion.is_top ? "auch ein TOP" : "kein TOP mehr"}. <a href='#{toggle_motion_top_path(@motion)}'>Rückgängig machen?</a>".html_safe
+    return generic_denied_message unless is_current_in_group?("finanzen") || is_current_in_referat?(@motion.referat)
+    @referat = params[:referat].blank? ? nil : Referat.find(params[:referat])
+    if @referat.nil? && !params[:referat].blank?
+      flash[:error] = "Das ausgewählte Referat existiert gar nicht."
     else
-      flash[:error] = "Konnte den Antrag nicht ändern."
+      old = @motion.referat_id
+      @motion.referat_id = @referat ? @referat.id : ""
+      if old == @motion.referat_id
+        flash[:warning] = "Das gewählte Referat ist schon das aktuelle."
+      elsif @motion.save
+        if @referat
+          add_comment(@motion, "#{current_user.name} hat das zugeordnete Referat geändert in #{@referat.name}.")
+        else
+          add_comment(@motion, "#{current_user.name} hat das zugeordnete Referat entfernt.")
+        end
+        mailtxt = ""
+        if @motion.status == Motion::STATUS_NEW && @referat
+          # only mail to new referat
+          Mailer.new_motion(@motion, @referat, false, false)
+          mailtxt = "#{@referat.name} hat eine E-Mail erhalten, die sie über diesen neuen Antrag informiert."
+        end
+        flash[:notice] = "Das Referat wurde geändert. #{mailtxt}"
+      else
+        flash[:error] = "Konnte das Referat nicht ändern."
+      end
     end
+
     redirect_to @motion
   end
 
@@ -160,18 +180,9 @@ class MotionsController < ApplicationController
       end
     end
 
-
     @motion.dynamic_fields = Base64.encode64(Marshal.dump(params[:dynamic]))
-
-    # collect all fields that make up the fin_exp_amount
-    @motion.fin_expected_amount = 0
-    d = @motion.dynamic
-    @motion.get_form_fields.each do |f|
-      val = d[f[:name].field_cleanup]
-      if f[:is_fin_expected_amount] && val.to_f.to_s == val
-        @motion.fin_expected_amount += val.to_f
-      end
-    end
+    @motion.fin_expected_amount = @motion.calc_fin_expected_amount
+    @motion.status = Motion::STATUS_NEW
 
     uuid = UUIDTools::UUID.timestamp_create.to_s
     while Motion.find_by_uuid(uuid) != nil
@@ -180,6 +191,8 @@ class MotionsController < ApplicationController
     @motion.uuid = uuid
     respond_to do |format|
       if @motion.save
+        Mailer.new_motion(@motion, @motion.referat, @motion.finanz?, true)
+
         format.html { redirect_to @motion, notice: 'Motion was successfully created.' }
         format.json { render json: @motion, status: :created, location: @motion }
       else
