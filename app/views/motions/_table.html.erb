@@ -1,0 +1,20 @@
+<% if motions.empty? %>
+  <p>Keine!</p>
+<% else %>
+  <table>
+    <tr>
+      <th>Erstellt</th>
+      <th>Typ</th>
+      <th>Titel</th>
+      <th>Status</th>
+    </tr>
+  <% motions.each do |motion| %>
+    <tr>
+      <td title="Letzte Änderung: <%=motion.updated_at.strftime("%e.%m.%Y")%> (vor <%=time_ago_in_words motion.updated_at %>)"><%= link_to motion.created_at.strftime("%e.%m.%Y"), motion %></td>
+      <td><%= link_to motion.kind, motion %></td>
+      <td><%= link_to motion.title, motion %></td>
+      <td><%= link_to motion.status, motion %></td>
+    </tr>
+  <% end %>
+  </table>
+<% end %>
