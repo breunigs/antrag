@@ -2,7 +2,7 @@
 
   <h1>Fachschaften</h1>
 
-  <%= link_to 'Neue Fachschaft anlegen', new_fachschaft_path, :class => "single" %>
+  <%= link_to 'Neue Fachschaft anlegen', new_fachschaft_path, :class => "single" if is_current_in_group?("root") %>
 
 
   <% @fachschaften.each do |fachschaft| %>
