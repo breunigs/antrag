@@ -1,0 +1,13 @@
+Hallo<%=@motion.contact_name ? " " + @motion.contact_name : ""%>,
+
+Dein Antrag „<%=@motion.title%>“ wurde abgelehnt. Die Details und eine mögliche Begründung findest Du auf:
+
+<%= REMOTE_BASE + "/motions/#{@motion.id}" %>
+
+Bitte erlaube den Referenten mindestens einen Tag die Begründung nachzureichen bzw. in die Kommentare unter dem Antrag zu schreiben. Danach solltest Du auf diese E-Mail antworten können um freundlich nachzufragen.
+
+--<%=" "%>
+
+Mailtext doof? Ändere mich in: app/views/app/views/mailer/motion_denied.text.erb
+
+Hinweis: Hinter der E-Mail Adresse <%=MAIL_FROM%> sitzt kein Mensch. Wenn Du Antwort erhalten möchtest, schreibe bitte also entweder an den/die Antragsteller/in oder eines der Referate.
