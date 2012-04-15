@@ -39,9 +39,11 @@ class Mailer < ActionMailer::Base
   def motion_granted(motion)
     mail = []
     mail << MAIL_FINANZ
-    mail << referat.mail if referat
+    mail << motion.referat.mail if motion.referat
 
     add_motion_headers(motion)
+
+    @motion = motion
 
     m = mail(:to => @motion.submitter, :subject => "Antrag angenommen: Nächste Schritte", :reply_to => mail).deliver
     store_message_id(motion, m)
@@ -54,13 +56,12 @@ class Mailer < ActionMailer::Base
     headers["X-Antrag-ID"] = motion.id
     headers["X-Antrag-Status"] = motion.status
     headers["X-Antrag-Kind"] = motion.kind
-    headers["References"] = motion.references unless motion.message_id.blank?
+    headers["References"] = motion.references unless motion.references.blank?
   end
 
   def store_message_id(motion, message)
     motion.references ||= ""
-    message = [message] if message.is_a? String
-    message.flatten.each { |m|  motion.references += " <#{m.message_id}>" unless motion.references.include?("<#{m.message_id}>") }
+    [message].flatten.each { |m|  motion.references += " <#{m.message_id}>" unless motion.references.include?("<#{m.message_id}>") }
     motion.save
   end
 
