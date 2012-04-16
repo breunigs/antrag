@@ -40,11 +40,9 @@ class Motion < ActiveRecord::Base
   STATUS_BILLS_ARRIVED = "Abrechnungen eingegangen"
   STATUS_DEDUCTED = "Gebucht"
   STATUS_COMPLETED = "Abgeschlossen"
-  TOP_NONE = "nirgens"
-  TOP_FSK = "FSK"
-  TOP_REFKONF = "RefKonf"
-  TOP_BOTH = "FSK oder RefKonf"
-
+  TOP_NONE = "kein TOP"
+  TOP_FSK = "TOP für die nächste FSK Sitzung"
+  TOP_REFKONF = "TOP für die nächste RefKonf"
 
   def is_public?
     !publication.blank?
@@ -67,7 +65,9 @@ class Motion < ActiveRecord::Base
   def get_top_state
     return Motion::TOP_NONE if status != STATUS_NEW
     if referat_may_accept?
-      referat.nil? ? Motion::TOP_BOTH : Motion::TOP_NONE
+      # make it refkonf TOP if no referat was chosen or the referat has
+      # no members
+      (referat.nil? || referat.users.empty?) ? Motion::TOP_REFKONF : Motion::TOP_NONE
     else
       Motion::TOP_FSK
     end

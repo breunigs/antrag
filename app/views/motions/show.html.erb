@@ -10,9 +10,14 @@
   </p>
 
   <p>
-    <b>Status</b><br/>
-    <%= @m.status + (@m.is_finished? ? " (d.h. insbesondere abgeschlossen)" : "") %>.
-    <%= @m.top.blank? ? "Nirgens als TOP gelistet." : "TOP für die nächste Sitzung der #{@m.top}." %><br/>
+    <%= form_tag("/motions/#{@m.id}/change_top", :method => "get", :id => "motion_change_top") do %>
+      <b>Status</b><br/>
+      <%=
+        opt = [["kein TOP", Motion::TOP_NONE], ["TOP für die nächste FSK Sitzung", Motion::TOP_FSK], ["TOP für die nächste RefKonf", Motion::TOP_REFKONF]]
+        select_tag(:top, options_for_select(opt, @m.top), {:onchange => %($('#motion_change_top').submit();), :style => "margin:0;"})
+      %>
+    <% end %>
+    Status: <%= @m.status + (@m.is_finished? ? " (d.h. insbesondere abgeschlossen)" : "") %>.<br/>
     Erstellt am <%=@m.created_at.strftime("%e.%m.%Y")%>, letzte Änderung vor <%= time_ago_in_words @m.updated_at %>.
   </p>
 
@@ -27,8 +32,8 @@
       <%= form_tag("/motions/#{@m.id}/change_referat", :method => "get", :id => "motion_change_referat") do %>
         <b>Referat</b><br/>
         <%=
-          opt = [["(keins = TOP FSK/RefKonf)", ""]] + Referat.all.map { |r| [r.name, r.id] }
-          select_tag(:referat, options_for_select(opt, @m.referat ? @m.referat.id : ""), {:onchange => %(if(confirm("Soll das Referat sicher geändert werden? Wird es geändert, so erhält das neue Referat (wahrscheinlich) eine E-Mail und das alte kann nicht mehr zugreifen. Ob eine E-Mail versendet wird hängt vom Status ab und wird ggf. angezeigt.")) $('#motion_change_referat').submit();), :style => "margin:0;"})
+          opt = [["(keins ⇒ TOP RefKonf)", ""]] + Referat.all.map { |r| [r.name, r.id] }
+          select_tag(:referat, options_for_select(opt, @m.referat ? @m.referat.id : ""), {:onchange => %(if(confirm("Soll das Referat sicher geändert werden? Wird es geändert, so erhält das neue Referat (wahrscheinlich) eine E-Mail und das alte kann nicht mehr zugreifen. Ob eine E-Mail versandt wurde hängt vom Status ab und wird ggf. angezeigt.")) $('#motion_change_referat').submit();), :style => "margin:0;"})
         %>
       <% end %>
 
@@ -82,6 +87,13 @@
       <% end %>
     <% end %>
   </div>
+
+  <% if current_may_accept_deny?(@m) %>
+    <p style="margin-top:15px">
+      <b>Hinweise / Hilfe</b><br/>
+      Du bist berechtigt an diesem Antrag Änderungen vorzunehmen. Damit bist Du wahrscheinlich Finanzreferent <%= @m.referat ? "oder Mitglied des Referats „#{@m.referat.name}“" : "" %>. Du hast jetzt die Möglichkeit den Antrag anzunehmen oder abzulehnen. Wenn Du ablehnst, erhält der/die Antragsteller/in eine E-Mail und der Vorgang ist abgeschlossen. Wenn Du sie annimmst, wird auch eine E-Mail versandt und um die entsprechenden Unterlagen gebeten. <%= @m.referat ? "Wenn Dein Referat für den Antrag nicht zuständig ist, kannst Du entweder ein anderes Referat auswählen; oder wenn keins passt Dich für nicht zuständig erklären. Dann wird der Antrag automatisch zu einem TOP für die nächste RefKonf. Wenn Du den Antrag erst durchsprechen möchtest, kannst Du den Antrag als TOP für die FSK oder RefKonf bestimmen." : "" %>
+    </p>
+  <% end %>
 </div>
 
 

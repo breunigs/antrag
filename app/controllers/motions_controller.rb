@@ -11,8 +11,8 @@ class MotionsController < ApplicationController
   def index
     return unless force_login
 
-    @motions_fsk = Motion.find_all_by_top([Motion::TOP_BOTH, Motion::TOP_FSK])
-    @motions_refkonf = Motion.find_all_by_top([Motion::TOP_BOTH, Motion::TOP_REFKONF])
+    @motions_fsk = Motion.find_all_by_top(Motion::TOP_FSK)
+    @motions_refkonf = Motion.find_all_by_top(Motion::TOP_REFKONF)
 
     @motions_status = Motion.find(:all, :order => "status, created_at").group_by { |m| m.status }
 
@@ -44,6 +44,23 @@ class MotionsController < ApplicationController
   def add_attachment
     @motion = Motion.find(params[:id])
     @attachment = Attachment.new
+  end
+
+  def change_top
+    @motion = Motion.find(params[:id])
+    return generic_denied_message unless current_may_accept_deny?(@motion)
+    if [Motion::TOP_FSK, Motion::TOP_NONE, Motion::TOP_REFKONF].include?(params[:top])
+      @motion.top = params[:top]
+      if @motion.save
+        flash[:notice] = "TOP Status erfolgreich geändert."
+      else
+        flash[:error] = "Konnte den Antrag nicht ändern."
+      end
+    else
+      flash[:error] = "Ausgewählter TOP Status ist ungültig. Was machst Du denn mit dem armen Browser?"
+    end
+
+    redirect_to @motion
   end
 
   def change_referat

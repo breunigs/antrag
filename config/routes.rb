@@ -12,8 +12,8 @@ Antrag::Application.routes.draw do
   # comments
   post "/motions/:id/store_comment" => "motions#store_comment", :as => :motion_store_comment
 
-  # referat
   get "/motions/:id/change_referat" => "motions#change_referat", :as => :motion_change_referat
+  get "/motions/:id/change_top" => "motions#change_top", :as => :motion_change_top
 
   get "/motions/:id/grant" => "motions#grant", :as => :motion_grant
   get "/motions/:id/deny" => "motions#deny", :as => :motion_deny
