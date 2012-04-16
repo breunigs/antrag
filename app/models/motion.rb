@@ -102,6 +102,15 @@ class Motion < ActiveRecord::Base
     subblock ? @dynamic_unmarshaled[kind.field_cleanup] : @dynamic_unmarshaled
   end
 
+  def bahncard_to_float(index)
+    case dynamic["Bahncard"][index]
+      when "BahnCard 25" then 0.75
+      when "BahnCard 50" then 0.5
+      when "keine"       then 1.0
+      else raise "BahnCard Typ unbekannt: #{bc}"
+    end
+  end
+
   def calc_fin_expected_amount
     # collect all fields that make up the fin_exp_amount
     exp = 9999.99
@@ -112,9 +121,18 @@ class Motion < ActiveRecord::Base
       when "Finanzantrag/Reisekostenantrag"
         case d["Verkehrsmittel".field_cleanup]
           when "Bahn"
-            exp = d["Kosten Bahnfahrt".field_cleanup].to_f_magic
+            exp = 0
+            bahn = d["Kosten Bahnfahrt".field_cleanup].to_f_magic
+            d["Name"].each do |id, name|
+              exp += bahn * bahncard_to_float(id) unless name.blank?
+            end
           when "Auto"
-            exp = d["Automiete".field_cleanup].to_f_magic + d["Treibstoffkosten".field_cleanup].to_f_magic
+            privat = d["Automiete".field_cleanup].to_f_magic == 0
+            if privat
+              exp = d["Fahrtweg in km".field_cleanup].to_f_magic * KILOMETER_PAUSCHALE
+            else
+              exp = d["Treibstoffkosten".field_cleanup].to_f_magic + d["Automiete".field_cleanup].to_f_magic
+            end
           when "Sonstiges"
             exp = d["Kosten insgesamt".field_cleanup].to_f_magic
           else raise("Invalid Verkehrsmittel selection.")

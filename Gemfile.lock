@@ -1,3 +1,11 @@
+GIT
+  remote: https://github.com/jacott/rails-latex.git
+  revision: 9aace60b0a77f6de9ef0ce4b16d64fee1d9abfdc
+  branch: master
+  specs:
+    rails-latex (1.0.9)
+      rails (>= 3.0.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -132,6 +140,7 @@ DEPENDENCIES
   omniauth-ldap
   paperclip (~> 3.0)
   rails (= 3.2.2)
+  rails-latex!
   rinku (~> 1.2.2)
   sass-rails (~> 3.2.3)
   sqlite3

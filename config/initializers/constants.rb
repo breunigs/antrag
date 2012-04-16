@@ -6,6 +6,8 @@ MAX_ATTACHMENT_SIZE = 5.megabytes
 
 MAX_REFERAT_FINANZ_BUDGET = 250.0
 
+KILOMETER_PAUSCHALE = 0.16
+
 GROUPS = {:finanzen => "finanzen", :root => "root" }
 
 REMOTE_BASE = "https://antrag.fsk.uni-heidelberg.de"

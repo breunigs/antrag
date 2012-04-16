@@ -17,7 +17,8 @@ gem 'rinku', '~> 1.2.2', :require => 'rails_rinku'
 # random IDs for motion
 gem 'uuidtools'
 
-
+# TeX
+gem "rails-latex", :git => "https://github.com/jacott/rails-latex.git", :branch => "master"
 
 # Gems used only for assets and not required
 # in production environments by default.

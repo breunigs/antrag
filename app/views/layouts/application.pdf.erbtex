@@ -1,0 +1,10 @@
+\documentclass[10pt, a4paper]{article}
+\usepackage[ngerman]{babel}
+\usepackage[ansinew]{inputenc}
+\usepackage[T1]{fontenc}
+
+\begin{document}
+
+< %= yield % >
+
+\end{document}

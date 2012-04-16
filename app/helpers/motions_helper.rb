@@ -138,5 +138,4 @@ module MotionsHelper
   def next_button
     '<button class="button nextstep primary">Nächster Schritt</button>'
   end
-
 end

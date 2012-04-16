@@ -32,6 +32,8 @@ Antrag::Application.routes.draw do
   match "/auth/failure" => "sessions#failure"
   match "/logout" => "sessions#destroy", :as => :logout
 
+  # forms routes
+  match "/forms/orientierungsantrag" => "static#orientierungsantrag", :defaults => { :format => 'pdf' }
 
   match '/*path' => 'static#fourofour'
 
